@@ -10,7 +10,8 @@ final class App
 {
     public function __construct(
         private readonly LogRepository $repository,
-        private readonly ServiceLogger $logger
+        private readonly ServiceLogger $logger,
+        private readonly Config $config
     ) {
     }
 
@@ -40,7 +41,7 @@ final class App
             $this->json([
                 'status' => 'error',
                 'error' => 'internal_server_error',
-                'message' => $this->debugEnabled() ? $exception->getMessage() : 'Internal server error.',
+                'message' => $this->config->bool('APP_DEBUG', false) ? $exception->getMessage() : 'Internal server error.',
             ], 500);
         }
     }
@@ -127,16 +128,5 @@ final class App
             $data,
             JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
         );
-    }
-
-    private function debugEnabled(): bool
-    {
-        $value = getenv('APP_DEBUG');
-
-        if ($value === false) {
-            return true;
-        }
-
-        return in_array(strtolower((string) $value), ['1', 'true', 'yes', 'on'], true);
     }
 }

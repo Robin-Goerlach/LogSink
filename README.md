@@ -1,70 +1,81 @@
 # SASD LogSink
 
-**SASD LogSink** ist ein bewusst einfacher PHP-8.4-Logging-Service für MariaDB 10.11.
-
-Der Service nimmt Logmeldungen von Clients per HTTP entgegen und speichert den unveränderten Request-Body in einer MariaDB-Datenbank. Zusätzlich werden technische Request-Metadaten wie IP-Adresse, HTTP-Methode, URI, Content-Type und User-Agent gespeichert.
+**SASD LogSink** ist eine experimentelle Logging-Plattform für die SASD-GmbH. Die aktuelle V1 besteht aus einem einfachen PHP-8.4-Service, einer MariaDB-10.11-Datenbank und einem Java-Swing-Viewer.
 
 > Status: V1 / Entwicklungsstand  
-> Sicherheit: bewusst ungeschützt, jeder Client darf schreiben und lesen.
+> Sicherheit: bewusst ungeschützt. Jeder erreichbare Client darf schreiben und lesen.  
+> Ziel: erst eine verständliche, lauffähige und erweiterbare Basis schaffen.
 
-## Ziel des Projekts
+## Komponenten
 
-Dieses Projekt dient als minimaler zentraler Log-Empfänger für Experimente, interne Tests und spätere Erweiterungen.
+| Pfad | Komponente | Beschreibung |
+|---|---|---|
+| `services/log-sink` | PHP Log Sink Service | Nimmt Logmeldungen per HTTP entgegen und schreibt sie in MariaDB. |
+| `clients/java-log-viewer` | Java Log Viewer | Ruft Logmeldungen per `GET` ab und zeigt sie sortierbar in einer Swing-Tabelle an. |
+| `database/mariadb` | MariaDB Schema | Erstellt Datenbank, Tabelle, Trigger, View und Demo-Daten. |
+| `contracts/http-api` | API-Vertrag | Beschreibt die HTTP-Schnittstelle zwischen Services und Clients. |
+| `docs` | Dokumentation | Architektur, Repository-Struktur und Entwicklungshinweise. |
+| `scripts` | Hilfsskripte | Kleine Start- und Testskripte für die lokale Entwicklung. |
 
-Die erste Version ist absichtlich klein gehalten:
-
-- kein Framework
-- keine `.htaccess`
-- eine `index.php` im Projekt-Root
-- eine `public/index.php` als öffentlicher Frontcontroller
-- einfache `.env`
-- einfache Klassenstruktur unter `src/`
-- Schreiben per `POST`
-- Lesen per `GET`
-
-## Projektstruktur
+## Repository-Struktur
 
 ```text
-sasd-log-sink/
-├── .env.example
-├── .gitignore
-├── LICENSE
-├── README.md
-├── index.php
+LogSink/
+├── clients/
+│   └── java-log-viewer/
+├── contracts/
+│   └── http-api/
+│       └── logs-v1.md
 ├── database/
-│   └── sasd_logging_mariadb_10_11_demo.sql
-├── public/
-│   └── index.php
-├── src/
-│   ├── App.php
-│   ├── Bootstrap.php
-│   ├── Config.php
-│   ├── Database.php
-│   ├── LogRepository.php
-│   └── ServiceLogger.php
-└── var/
-    └── log/
-        └── .gitkeep
+│   └── mariadb/
+│       └── mariadb_10_11.sql
+├── docs/
+│   ├── architecture.md
+│   ├── development.md
+│   └── repository-structure.md
+├── scripts/
+│   ├── smoke-test.sh
+│   ├── start-java-viewer.sh
+│   └── start-php-service.sh
+└── services/
+    └── log-sink/
+        ├── .env.example
+        ├── index.php
+        ├── public/
+        │   └── index.php
+        ├── src/
+        └── var/
+            └── log/
+                └── .gitkeep
 ```
 
 ## Voraussetzungen
 
+Für den PHP-Service:
+
 - PHP 8.4
+- PHP PDO MySQL Extension
 - MariaDB 10.11
-- PDO MySQL Extension für PHP
 
-## Installation
+Für den Java-Viewer:
 
-Repository klonen oder Dateien entpacken:
+- Java 17 oder neuer
+- Maven 3.x
+
+## Schnellstart
+
+### 1. Datenbank einrichten
 
 ```bash
-git clone <repository-url> sasd-log-sink
-cd sasd-log-sink
+mysql -u root -p < database/mariadb/mariadb_10_11.sql
 ```
 
-`.env` aus Vorlage erzeugen:
+Das Skript legt die Demo-Datenbank `sasd_logging`, die Tabelle `log_entries`, den Trigger, den View und 10 Demo-Logmeldungen an.
+
+### 2. PHP-Service konfigurieren
 
 ```bash
+cd services/log-sink
 cp .env.example .env
 ```
 
@@ -85,125 +96,81 @@ SERVICE_LOG_FILE=var/log/service.log
 SERVICE_LOG_LEVEL=info
 ```
 
-## Datenbank anlegen
+### 3. PHP-Service starten
 
-Die Datenbank, Tabelle, Trigger, View und Demo-Daten liegen in:
-
-```text
-database/sasd_logging_mariadb_10_11_demo.sql
-```
-
-Import-Beispiel:
+Aus dem Repository-Root:
 
 ```bash
-mysql -u root -p < database/sasd_logging_mariadb_10_11_demo.sql
+./scripts/start-php-service.sh
 ```
 
-## Start im PHP Development Server
+Oder manuell:
 
 ```bash
+cd services/log-sink
 php -S 127.0.0.1:8080 public/index.php
 ```
 
-## API
-
-### Logmeldung schreiben
-
-```http
-POST /api/logs
-```
-
-Der Body wird unverändert gespeichert.
-
-Beispiel mit JSON:
+### 4. Schreiben testen
 
 ```bash
 curl -i -X POST "http://127.0.0.1:8080/api/logs" \
   -H "Content-Type: application/json; charset=utf-8" \
-  --data-binary '{"level":"INFO","service":"demo","message":"Hallo Logging Service"}'
+  --data-binary '{"level":"INFO","service":"demo","message":"Hallo LogSink"}'
 ```
 
-Erfolgsantwort:
-
-```json
-{
-  "status": "created",
-  "id": 123,
-  "receivedAt": "2026-04-24 10:15:01.123456",
-  "rawMessageSize": 67,
-  "payloadSha256": "..."
-}
-```
-
-### Logmeldungen lesen
-
-```http
-GET /api/logs?limit=10
-```
-
-Beispiel:
+### 5. Lesen testen
 
 ```bash
 curl -i "http://127.0.0.1:8080/api/logs?limit=10"
 ```
 
-Antwort:
+### 6. Java-Viewer starten
 
-```json
-{
-  "status": "ok",
-  "items": [
-    {
-      "id": 123,
-      "received_at": "2026-04-24 10:15:01.123456",
-      "source_ip": "127.0.0.1",
-      "source_port": 54321,
-      "http_method": "POST",
-      "request_uri": "/api/logs",
-      "content_type": "application/json; charset=utf-8",
-      "user_agent": "curl/8.0.0",
-      "raw_message_size": 67,
-      "payload_sha256": "...",
-      "raw_message_text": "{...}",
-      "raw_message_base64": "..."
-    }
-  ]
-}
+```bash
+cd clients/java-log-viewer
+mvn clean package
+java -jar target/sasd-log-viewer-java-1.0.0.jar
 ```
 
-## Technisches Verhalten
+## HTTP API V1
 
-Bei `POST` liest der Service den kompletten HTTP-Body:
+Die aktuelle Schnittstelle ist absichtlich klein:
 
-```php
-file_get_contents('php://input')
+```text
+POST /api/logs
+GET  /api/logs?limit=100
 ```
 
-Dieser Inhalt wird als `raw_message` gespeichert. Die Datenbank berechnet über einen Trigger automatisch:
+Der Service speichert den Request-Body bei `POST` unverändert als `raw_message`.
 
-- `raw_message_size`
-- `payload_sha256`
+Details stehen in:
 
-Bei `GET` liest der Service die letzten Logmeldungen aus dem View `v_log_entries`.
+```text
+contracts/http-api/logs-v1.md
+```
 
 ## Sicherheitshinweis
 
-Diese V1 ist bewusst ungeschützt. Jeder erreichbare Client kann Logmeldungen schreiben und lesen.
+Diese V1 ist absichtlich ungeschützt. Das entspricht dem aktuellen Entwicklungsziel, ist aber nicht produktionsreif.
 
-Das ist für spätere produktive Nutzung nicht empfehlenswert. Mögliche spätere Erweiterungen wären:
+Bekannte offene Punkte für spätere Versionen:
 
-- API-Key
-- Schreib- und Leserechte getrennt
-- Rate Limiting
+- Authentifizierung, z. B. API-Key
+- getrennte Lese- und Schreibrechte
 - maximale Payload-Größe
-- CORS-Konfiguration
-- Mandantenfähigkeit
+- Rate Limiting
+- Pagination mit Offset oder Cursor
 - strukturierte Suche
-- Pagination
-- Lösch- oder Archivierungsstrategie
+- Aufbewahrungsfristen und Archivierung
+- Mandantenfähigkeit
 
-Diese Punkte sind absichtlich noch nicht Bestandteil der V1.
+Diese Punkte sind bewusst nicht Bestandteil der V1.
+
+## Changelog
+
+Siehe [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Lizenz
 
-Dieses Projekt steht unter der MIT-Lizenz. Siehe `LICENSE`.
+Dieses Projekt steht unter der MIT-Lizenz. Siehe [`LICENSE`](LICENSE).
