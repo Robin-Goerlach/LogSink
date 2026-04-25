@@ -14,7 +14,7 @@ final class Bootstrap
         $logger = new ServiceLogger($projectRoot, $config);
         $database = new Database($config);
         $repository = new LogRepository($database);
-        $app = new App($repository, $logger);
+        $app = new App($repository, $logger, $config);
 
         $app->handle();
     }
