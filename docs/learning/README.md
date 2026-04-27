@@ -14,12 +14,15 @@ LogSink ist aktuell eine bewusst einfache und ungeschützte V1. Ziel ist nicht, 
 | `01-source-analysis.md` | Zusammenfassung der bereitgestellten Mustralla/MustelaLogAPI-Dokumente |
 | `02-gap-analysis.md` | Vergleich: aktueller LogSink-Stand vs. Zielbild |
 | `03-learning-plan.md` | Lehrplan mit atomaren Schritten |
+| `03a-learning-plan-addendum-2026-04-27.md` | Ergänzende LS-Schritte aus der IONOS-Diagnose |
 | `04-implementation-roadmap.md` | technische Roadmap über Service, Datenbank und Client |
 | `05-decision-log.md` | Architekturentscheidungen und ihre Begründung |
 | `06-session-state.md` | aktueller Arbeitsstand für die nächste Sitzung |
 | `07-beginner-guide.md` | praktische Erklärungen für Neulinge: Maven, Composer, curl, PHPUnit, phpDocumentor, Deployment |
 | `08-test-and-quality-plan.md` | Teststrategie, curl-Tests, PHPUnit, Java-Client-Prüfung |
 | `09-risk-register.md` | Risiken, Inkonsistenzen und technische Schulden |
+| `13-from-unprotected-to-secure.md` | Sicherheits-Lernpfad von der offenen V1 zur geschützten API |
+| `14-ionos-deployment-notes.md` | Praktische IONOS-Deployment-Erkenntnisse |
 | `99-open-questions.md` | offene Fragen und Klärungsbedarf |
 | `templates/step-template.md` | Vorlage für jeden einzelnen Umsetzungsschritt |
 

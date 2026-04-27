@@ -153,10 +153,11 @@ Ziel:
 ## Erledigte LS-Schritte
 
 - LS-000 Repository-Status prüfen.
-- LS-010 PHP-Service remote erreichbar machen.
+- LS-010 PHP-Service lokal starten und PHP-Service remote erreichbar machen.
 - LS-011 MariaDB-Demo-Daten bei IONOS prüfen.
-- LS-012 curl-GET-Test remote erfolgreich.
+- LS-012 curl-GET-Test remote erfolgreich und POST testen.
 - LS-013 Java-Client mit Maven bauen und starten.
+  LS-013b: Remote-Service-URL mit curl diagnostizieren
 - LS-013b Remote-Service mit curl diagnostizieren.
 - LS-016 teilweise: externe `.env-logsink`, public/index.php, Serverdiagnose und Entfernen öffentlicher `.env`.
 
@@ -164,10 +165,12 @@ Ziel:
 
 1. `services/log-sink/php-diagnose.php`-Löschung committen.
 2. Diese Dokumentation einspielen und committen.
-3. LS-014: Code stärker kommentieren.
+3. LS-014: Code stärker kommentieren und Code-Lesbarkeit verbessern.
 4. LS-015/LS-019: Java-Client-Konfiguration einführen.
 5. LS-016: IONOS-Deployment-Dokumentation ausarbeiten.
-6. LS-017: MariaDB-Skripte dokumentieren.
+   LS-016b: Dokument "Von ungeschützt zu sicher" anlegen
+   LS-016c: IONOS-/Existing-Database-SQL sauber trennen
+6. LS-017: MariaDB-Skripte für lokal und IONOS trennen und dokumentieren.
 7. LS-018: Dokument "Von ungeschützt zu sicher" weiterführen.
 
 ## Warnung
