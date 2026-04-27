@@ -2,23 +2,23 @@
 
 Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Faden stehen in `docs/learning/`.
 
-## Sofort
+## Sofort / Nächste Sitzung
 
-- [ ] Gelöschtes Diagnose-Skript im Service-Verzeichnis committen: `git add -u services/log-sink/php-diagnose.php`.
-- [ ] Prüfen, ob `tools/diagnostics/php-diagnose.php` besser in `php-diagnose.php.example` umbenannt werden soll.
-- [ ] Prüfen, ob `.env.IONOS` sauber ignoriert wird.
-- [ ] Remote-Service erneut testen: `curl -i "http://api.sasd.de/logsink/index.php?limit=5"`.
+- [ ] `git status` prüfen.
+- [ ] `curl -i "http://api.sasd.de/logsink/index.php?limit=5"` erneut testen.
 - [ ] Sicherheitschecks wiederholen:
   - [ ] `curl -i "http://api.sasd.de/logsink/.env"`
   - [ ] `curl -i "http://api.sasd.de/logsink/_.env"`
   - [ ] `curl -i "http://api.sasd.de/.env-logsink"`
+- [ ] Prüfen, ob `tools/diagnostics/php-diagnose.php` langfristig so heißen soll oder `.example` erhalten soll.
+- [ ] Prüfen, ob `.env.IONOS` sauber ignoriert wird.
 
 ## Next
 
-- [ ] LS-014: Code stärker kommentieren.
-- [ ] LS-015/LS-019: Java-Client-Konfiguration einführen.
-- [ ] LS-016: IONOS-/Deployment-Dokumentation ausarbeiten.
-- [ ] LS-017: MariaDB-Skripte für lokal und IONOS dokumentieren.
+- [ ] LS-014 / LS-020: Code stärker kommentieren.
+- [ ] LS-015 / LS-019: Java-Client-Konfiguration einführen.
+- [ ] LS-016: IONOS-/Deployment-Dokumentation weiter ausarbeiten.
+- [ ] LS-017: MariaDB-Skripte prüfen und bei Bedarf verfeinern.
 - [ ] LS-018: Dokument "Von ungeschützt zu sicher" weiter ausarbeiten.
 - [ ] `docs/learning/06-session-state.md` am Ende der nächsten Sitzung aktualisieren.
 
@@ -40,8 +40,6 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 
 ## Datenbank
 
-- [ ] `database/mariadb/README.md` ergänzen.
-- [ ] Nutzung der SQL-Dateien lokal und bei IONOS dokumentieren.
 - [ ] Bestehende Tabelle `log_entries` als Legacy/V0 einordnen.
 - [ ] Neue Tabellen für strukturierte Logereignisse planen.
 - [ ] `ingest_requests` ergänzen.
@@ -77,7 +75,5 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 
 - [ ] `docs/learning/10-git-workflows.md` erstellen.
 - [ ] `CHANGELOG.md` bei relevanten Projektänderungen fortschreiben.
-- [ ] README des PHP-Service an neue Start-/Testbefehle anpassen.
 - [ ] README des Java-Clients an neue Konfiguration anpassen.
-- [ ] IONOS-Deployment-Kapitel konkretisieren.
 - [ ] phpDocumentor-Kapitel ergänzen, sobald Composer eingeführt ist.

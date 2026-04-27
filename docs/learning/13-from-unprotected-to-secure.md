@@ -25,17 +25,7 @@ Die ungeschützte V1 beweist zuerst den Grundfluss:
 Client -> HTTP -> PHP-Service -> MariaDB -> Java-Viewer
 ```
 
-Damit sind die Grundbausteine sichtbar:
-
-- HTTP-Request,
-- PHP-Frontcontroller,
-- `.env`-Konfiguration,
-- Datenbankverbindung,
-- Repository,
-- JSON-Antwort,
-- Java-Client,
-- Maven-Build,
-- curl-Test.
+Damit sind die Grundbausteine sichtbar: HTTP-Request, PHP-Frontcontroller, Konfiguration, Datenbankverbindung, Repository, JSON-Antwort, Java-Client, Maven-Build und curl-Test.
 
 ## Risiken der V1
 
@@ -52,15 +42,9 @@ Damit sind die Grundbausteine sichtbar:
 
 ## Schutzschicht 1: sichere Konfiguration
 
-### Problem
+Die ursprüngliche `.env` lag im öffentlich erreichbaren Webverzeichnis. Die echte Konfiguration wird als `.env-logsink` außerhalb des Service-Verzeichnisses abgelegt.
 
-Die ursprüngliche `.env` lag im öffentlich erreichbaren Webverzeichnis.
-
-### Lösung
-
-Die echte Konfiguration wird als `.env-logsink` außerhalb des Service-Verzeichnisses abgelegt.
-
-### Test
+Test:
 
 ```bash
 curl -i "http://api.sasd.de/logsink/.env"
@@ -69,10 +53,6 @@ curl -i "http://api.sasd.de/.env-logsink"
 ```
 
 Erwartung: keine Secrets werden ausgeliefert.
-
-### Status
-
-Für IONOS-Minimalbetrieb erledigt.
 
 ## Schutzschicht 2: klare Routen
 
@@ -113,71 +93,20 @@ Fehler:
 }
 ```
 
-## Schutzschicht 4: JSON-Validierung
+## Weitere Schutzschichten
 
-Der Service prüft:
-
-- Content-Type,
-- Body-Größe,
-- gültiges JSON,
-- JSON-Root als Objekt,
-- Pflichtfelder,
-- Feldtypen.
-
-## Schutzschicht 5: Bearer-Token
-
-Geschützte Endpunkte verlangen:
-
-```http
-Authorization: Bearer <token>
-```
-
-## Schutzschicht 6: Token-Hashing und Pepper
-
-Tokens werden nicht im Klartext gespeichert. Die Datenbank enthält nur Hashes. Optional wird ein Pepper aus `.env-logsink` verwendet.
-
-## Schutzschicht 7: Principal-Typen
-
-| Principal | Aufgabe |
+| Schicht | Ziel |
 |---|---|
-| `source` | Events schreiben |
-| `client` | Events und Sources lesen |
-
-## Schutzschicht 8: Scopes
-
-| Scope | Bedeutung |
-|---|---|
-| `events.ingest` | Events schreiben |
-| `events.read` | Events lesen |
-| `sources.read` | Sources lesen |
-
-## Schutzschicht 9: Datenbankrechte
-
-Ziel: separate Datenbankbenutzer für Lesen und Schreiben.
-
-## Schutzschicht 10: Audit
-
-Sicherheitsrelevante Zugriffe werden in `access_audit` gespeichert.
-
-## Schutzschicht 11: Rate-Limiting
-
-Zu viele Requests werden gebremst.
-
-## Schutzschicht 12: IP-Allowlisting für Sources
-
-Ein Source-Token darf optional nur aus bestimmten Netzen schreiben.
-
-## Schutzschicht 13: sichere Client-Konfiguration
-
-Der Java-Client speichert später:
-
-- Service-URL,
-- Read-Token,
-- optional Ingest-Token,
-- Timeouts,
-- Page-Size.
-
-Tokens dürfen nicht in Logs, Exporte oder Fehlermeldungen gelangen.
+| JSON-Validierung | Content-Type, Größe, JSON, Pflichtfelder und Typen prüfen |
+| Bearer-Token | geschützte Endpunkte verlangen `Authorization: Bearer <token>` |
+| Token-Hashing und Pepper | Tokens nicht im Klartext speichern |
+| Principal-Typen | `source` schreibt, `client` liest |
+| Scopes | `events.ingest`, `events.read`, `sources.read` |
+| Datenbankrechte | getrennte DB-Rechte für Lesen und Schreiben |
+| Audit | sicherheitsrelevante Zugriffe nachvollziehbar speichern |
+| Rate-Limiting | Missbrauch und Fehlkonfiguration bremsen |
+| IP-Allowlisting | Source-Zugriffe optional auf Netze begrenzen |
+| sichere Client-Konfiguration | Tokens nicht loggen, exportieren oder offen anzeigen |
 
 ## Fazit
 

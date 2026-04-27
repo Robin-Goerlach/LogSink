@@ -6,6 +6,8 @@ Dieser Ordner hält den roten Faden für die Weiterentwicklung von SASD LogSink.
 
 LogSink ist aktuell eine bewusst einfache und ungeschützte V1. Ziel ist nicht, möglichst schnell viele Funktionen einzubauen, sondern das System in kleinen, verständlichen und testbaren Schritten zu einem sicheren, dokumentierten und wartbaren Logging-Service auszubauen.
 
+Der Ordner `docs/learning` ist das Projektgedächtnis. Er beantwortet nicht nur, **was** wir bauen, sondern auch **warum** und **in welcher Reihenfolge**.
+
 ## Dateien
 
 | Datei | Zweck |
@@ -13,8 +15,8 @@ LogSink ist aktuell eine bewusst einfache und ungeschützte V1. Ziel ist nicht, 
 | `00-project-brief.md` | Projektziel, Grundregeln und didaktischer Rahmen |
 | `01-source-analysis.md` | Zusammenfassung der bereitgestellten Mustralla/MustelaLogAPI-Dokumente |
 | `02-gap-analysis.md` | Vergleich: aktueller LogSink-Stand vs. Zielbild |
-| `03-learning-plan.md` | Lehrplan mit atomaren Schritten |
-| `03a-learning-plan-addendum-2026-04-27.md` | Ergänzende LS-Schritte aus der IONOS-Diagnose |
+| `03-learning-plan.md` | Haupt-Lehrplan mit atomaren Schritten |
+| `03a-learning-plan-addendum-2026-04-27.md` | Ergänzende LS-Schritte aus Maven-, curl- und IONOS-Diagnose |
 | `04-implementation-roadmap.md` | technische Roadmap über Service, Datenbank und Client |
 | `05-decision-log.md` | Architekturentscheidungen und ihre Begründung |
 | `06-session-state.md` | aktueller Arbeitsstand für die nächste Sitzung |
@@ -22,7 +24,9 @@ LogSink ist aktuell eine bewusst einfache und ungeschützte V1. Ziel ist nicht, 
 | `08-test-and-quality-plan.md` | Teststrategie, curl-Tests, PHPUnit, Java-Client-Prüfung |
 | `09-risk-register.md` | Risiken, Inkonsistenzen und technische Schulden |
 | `13-from-unprotected-to-secure.md` | Sicherheits-Lernpfad von der offenen V1 zur geschützten API |
-| `14-ionos-deployment-notes.md` | Praktische IONOS-Deployment-Erkenntnisse |
+| `14-ionos-deployment-notes.md` | praktische IONOS-Deployment-Erkenntnisse für die aktuelle V1 |
+| `15-java-client-configuration-plan.md` | Plan zur Ablösung der hart codierten Java-Service-URL durch Konfiguration |
+| `16-code-commenting-plan.md` | Plan für erklärende Kommentare in Service- und Client-Code |
 | `99-open-questions.md` | offene Fragen und Klärungsbedarf |
 | `templates/step-template.md` | Vorlage für jeden einzelnen Umsetzungsschritt |
 
@@ -46,4 +50,9 @@ Am Ende jeder Sitzung:
 1. Session-State aktualisieren.
 2. TODO aktualisieren.
 3. Entscheidungen dokumentieren.
-4. Commit schreiben.
+4. relevante Tests notieren.
+5. Commit schreiben.
+
+## Didaktische Regel
+
+Jeder technische Schritt soll so klein sein, dass er verstanden, getestet und mit einer sinnvollen Commit-Message abgeschlossen werden kann.

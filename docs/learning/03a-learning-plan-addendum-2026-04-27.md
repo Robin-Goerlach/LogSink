@@ -1,6 +1,6 @@
 # Learning Plan Addendum - 2026-04-27
 
-Dieses Addendum ergänzt `03-learning-plan.md` um die praktischen Schritte aus der IONOS-Diagnose.
+Dieses Addendum ergänzt `03-learning-plan.md` um praktische Schritte aus der Montagmorgen-Arbeit: Maven-Build, curl-Diagnose, IONOS-Dateistruktur, externe `.env-logsink`, Diagnose-Skript und SQL-Splitting.
 
 ## LS-013a: Java-Client mit Maven aus Repository-Root bauen
 
@@ -32,13 +32,11 @@ The goal you specified requires a project to execute but there is no POM in this
 
 Ursache: Maven wurde im Repository-Root ohne `-f clients/java-log-viewer/pom.xml` gestartet.
 
----
-
 ## LS-013b: Remote-Service mit curl diagnostizieren
 
 ### Ziel
 
-Klären, ob Fehler vom Java-Client, vom Webserver oder vom PHP-Service kommen.
+Klären, ob ein Fehler vom Java-Client, vom Webserver oder vom PHP-Service kommt.
 
 ### Tests
 
@@ -52,10 +50,8 @@ curl -i "http://api.sasd.de/logsink/public/index.php?limit=5"
 
 - `/logsink/api/logs` führt ohne Rewrite zu IONOS/Apache-404.
 - `/logsink/index.php?limit=5` ist für V1 der richtige Aufruf.
-- fehlendes `public/index.php` führte zu 500.
-- öffentlich erreichbare `.env` war ein Sicherheitsproblem.
-
----
+- Fehlendes `public/index.php` führte zu HTTP 500.
+- Eine öffentlich erreichbare `.env` war ein Sicherheitsproblem.
 
 ## LS-016a: IONOS-Dateistruktur verstehen
 
@@ -82,8 +78,6 @@ require __DIR__ . '/public/index.php';
 
 Fehlt `public/index.php`, entsteht HTTP 500.
 
----
-
 ## LS-016b: `.env` aus dem öffentlichen Webpfad entfernen
 
 ### Ziel
@@ -102,15 +96,9 @@ Keine dieser URLs darf Konfigurationsinhalte liefern.
 
 ### Umsetzung
 
-Die echte Konfiguration liegt außerhalb des Service-Verzeichnisses als:
-
-```text
-.env-logsink
-```
+Die echte Konfiguration liegt außerhalb des Service-Verzeichnisses als `.env-logsink`.
 
 Der Service sucht sie über `Bootstrap::resolveEnvFile()`.
-
----
 
 ## LS-016c: Diagnose-Skript kontrolliert verwenden
 
@@ -118,7 +106,7 @@ Der Service sucht sie über `Bootstrap::resolveEnvFile()`.
 
 Diagnose ermöglichen, ohne das Skript dauerhaft online zu lassen.
 
-### Zielstruktur
+### Repository-Ort
 
 ```text
 tools/diagnostics/php-diagnose.php
@@ -129,9 +117,7 @@ tools/diagnostics/php-diagnose.php
 1. temporär nach `logsink/php-diagnose.php` kopieren,
 2. Diagnose ausführen,
 3. sofort wieder löschen,
-4. mit curl prüfen, dass es 404 liefert.
-
----
+4. mit curl prüfen, dass es nicht mehr erreichbar ist.
 
 ## LS-017: MariaDB-Skripte für lokal und IONOS trennen
 
@@ -165,8 +151,6 @@ In der bestehenden IONOS-Datenbank nur ausführen:
 010_demo_data.sql
 ```
 
----
-
 ## LS-018: Dokument "Von ungeschützt zu sicher" beginnen
 
 ### Ziel
@@ -178,8 +162,6 @@ Den Sicherheitsausbau als lesbares Langdokument begleiten.
 ```text
 docs/learning/13-from-unprotected-to-secure.md
 ```
-
----
 
 ## LS-019: Java-Client-Konfiguration statt hart codierter URL
 
@@ -200,7 +182,7 @@ clients/java-log-viewer/client-settings.example.json
 clients/java-log-viewer/client-settings.json
 ```
 
-Beispiel:
+Beispiel für V1:
 
 ```json
 {
@@ -209,8 +191,6 @@ Beispiel:
   "timeoutSeconds": 15
 }
 ```
-
----
 
 ## LS-020: Code stärker kommentieren
 

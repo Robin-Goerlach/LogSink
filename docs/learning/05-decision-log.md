@@ -100,7 +100,7 @@ Least Privilege.
 
 ### Konsequenzen
 
-- `.env` erhält `DB_READ_USER`, `DB_READ_PASS`, `DB_WRITE_USER`, `DB_WRITE_PASS`.
+- `.env-logsink` erhält später `DB_READ_*` und `DB_WRITE_*`.
 - Repositories müssen bewusst den passenden DB-Zugang verwenden.
 - Deployment-Doku muss DB-Rechte erklären.
 
@@ -122,3 +122,43 @@ Der aktuelle Service läuft ohne Composer. Vor Tooling sollen aktueller Start, c
 
 - Phase 1/2 bleiben nah am aktuellen Code.
 - Phase 3 führt Composer, PSR-4 und PHPUnit ein.
+
+---
+
+## ADR-007: IONOS-Konfiguration liegt außerhalb des Service-Verzeichnisses
+
+**Status:** Accepted
+
+### Entscheidung
+
+Für den IONOS-Testbetrieb wird die echte Konfiguration nicht als `logsink/.env`, sondern als `.env-logsink` außerhalb des Service-Verzeichnisses abgelegt.
+
+### Grund
+
+Eine `.env` im öffentlich erreichbaren Webverzeichnis kann versehentlich per HTTP ausgeliefert werden. Das ist ein schweres Sicherheitsrisiko.
+
+### Konsequenzen
+
+- `Bootstrap::resolveEnvFile()` sucht externe Konfigurationspfade.
+- lokale Entwicklung mit `services/log-sink/.env` bleibt möglich.
+- Deployment-Dokumentation muss die Lage der `.env-logsink` erklären.
+
+---
+
+## ADR-008: Das Diagnose-Skript bleibt ein Tool, kein Service-Bestandteil
+
+**Status:** Accepted
+
+### Entscheidung
+
+Das PHP-Diagnose-Skript liegt unter `tools/diagnostics/php-diagnose.php` und nicht im Service-Verzeichnis.
+
+### Grund
+
+Das Skript ist für temporäre Fehlersuche nützlich, gibt aber technische Betriebsinformationen aus. Es darf nicht dauerhaft online liegen.
+
+### Konsequenzen
+
+- Nur temporär auf den Server kopieren.
+- Nach Diagnose sofort löschen.
+- Server mit curl auf 404 prüfen.

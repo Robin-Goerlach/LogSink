@@ -95,15 +95,6 @@ Nicht mehr verwenden:
 /homepages/.../htdocs/de.sasd/api/logsink/.env
 ```
 
-## Konfigurationssuche
-
-`Bootstrap::resolveEnvFile()` sucht:
-
-1. `LOGSINK_ENV_FILE`, falls als Umgebungsvariable gesetzt,
-2. zwei Ebenen über dem Service-Verzeichnis: `.env-logsink`,
-3. eine Ebene über dem Service-Verzeichnis: `.env-logsink`,
-4. lokale Entwicklungsdatei: `.env`.
-
 ## Sicherheitschecks
 
 ```bash
@@ -122,16 +113,9 @@ Das Diagnose-Skript liegt im Repository unter:
 tools/diagnostics/php-diagnose.php
 ```
 
-Einsatzregel:
+Einsatzregel: temporär nach `logsink/php-diagnose.php` kopieren, aufrufen, sofort wieder löschen, 404 prüfen.
 
-1. temporär nach `logsink/php-diagnose.php` kopieren,
-2. aufrufen,
-3. sofort wieder löschen,
-4. 404 prüfen.
-
-## Aktuelle Diagnosewerte
-
-Festgestellt am 2026-04-27:
+## Diagnosewerte vom 2026-04-27
 
 ```text
 PHP_VERSION=8.4.20
@@ -145,6 +129,6 @@ LOG_ENTRIES=10
 
 - Produktionsmodus `APP_DEBUG=false` vorbereiten.
 - `.env-logsink`-Lage endgültig dokumentieren.
-- `php-diagnose.php` ggf. in `.example` umbenennen.
 - später `var/cache/rate-limit` berücksichtigen.
 - später Authentifizierung und Rate-Limits testen.
+- später prüfen, ob der DocumentRoot direkt auf `public/` zeigen kann.

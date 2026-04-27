@@ -1,33 +1,34 @@
-# LogSink Dokumentations-Update 2026-04-27
+# LogSink Docs Cleanup 2026-04-27
 
-Dieses Paket dokumentiert den Montagmorgen-Stand:
+Dieses Paket aktualisiert die Dokumentation nach dem Montagmorgen-Deployment-Test.
 
-- Remote-V1-Service läuft bei IONOS.
-- Java-Client kann Remote-Logs anzeigen.
-- `.env` wurde aus dem öffentlich erreichbaren Service-Verzeichnis entfernt.
-- externe `.env-logsink` wird unterstützt.
-- SQL wurde in lokale DB-Erzeugung, Schema und Demo-Daten getrennt.
-- Diagnose-Skript wurde nach `tools/diagnostics` verschoben.
-- neue LS-Schritte für IONOS, Client-Konfiguration, Code-Kommentierung und den Weg von ungeschützt zu sicher wurden ergänzt.
+## Enthaltene Änderungen
 
-## Vorher noch sauber aufräumen
-
-Bei dir ist noch die gelöschte Datei `services/log-sink/php-diagnose.php` offen. Da das Diagnose-Skript nach `tools/diagnostics` verschoben wurde, sollte die Löschung sauber committed werden:
-
-```bash
-git add -u services/log-sink/php-diagnose.php
-git commit -m "Remove diagnostic script from service directory"
-git push origin main
-```
+- `docs/learning/README.md` neu formatiert und vollständig indexiert.
+- `docs/learning/06-session-state.md` auf den aktuellen Stand gebracht.
+- `docs/learning/03a-learning-plan-addendum-2026-04-27.md` bereinigt.
+- `docs/learning/05-decision-log.md` um IONOS-/Konfigurationsentscheidungen ergänzt.
+- `docs/learning/13-from-unprotected-to-secure.md` konsolidiert.
+- `docs/learning/14-ionos-deployment-notes.md` aktualisiert.
+- `docs/learning/15-java-client-configuration-plan.md` neu ergänzt.
+- `docs/learning/16-code-commenting-plan.md` neu ergänzt.
+- `docs/learning/99-open-questions.md` aktualisiert.
+- `database/mariadb/README.md` ergänzt.
+- `services/log-sink/README.md` aktualisiert.
+- `CHANGELOG.md` ausführlicher für den 2026-04-27-Stand formuliert.
+- `TODO.md` bereinigt und neu priorisiert.
 
 ## Einspielen
 
 Im Root des Repositories:
 
 ```bash
-unzip -o LogSink_2026-04-27_docs_update.zip -d .
+unzip -o LogSink_docs_cleanup_2026-04-27.zip -d .
 git status
-git add TODO.md CHANGELOG.md docs/learning
-git commit -m "Document IONOS V1 deployment and next learning steps"
+git diff --stat
+git add CHANGELOG.md TODO.md docs/learning database/mariadb/README.md services/log-sink/README.md
+git commit -m "Update LogSink documentation after IONOS deployment test"
 git push origin main
 ```
+
+Dieses Paket enthält bewusst keine Codeänderungen.
