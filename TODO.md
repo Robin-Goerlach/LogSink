@@ -1,19 +1,26 @@
 # TODO - SASD LogSink
 
-Diese Datei enthält nur konkrete Arbeitsaufgaben. Die Begründung und der rote Faden stehen in `docs/learning/`.
+Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Faden stehen in `docs/learning/`.
+
+## Sofort
+
+- [ ] Gelöschtes Diagnose-Skript im Service-Verzeichnis committen: `git add -u services/log-sink/php-diagnose.php`.
+- [ ] Prüfen, ob `tools/diagnostics/php-diagnose.php` besser in `php-diagnose.php.example` umbenannt werden soll.
+- [ ] Prüfen, ob `.env.IONOS` sauber ignoriert wird.
+- [ ] Remote-Service erneut testen: `curl -i "http://api.sasd.de/logsink/index.php?limit=5"`.
+- [ ] Sicherheitschecks wiederholen:
+  - [ ] `curl -i "http://api.sasd.de/logsink/.env"`
+  - [ ] `curl -i "http://api.sasd.de/logsink/_.env"`
+  - [ ] `curl -i "http://api.sasd.de/.env-logsink"`
 
 ## Next
 
-- [ ] Bereitgestellte Mustralla/MustelaLogAPI-Dokumente gegen die aktuelle LogSink-V1 abgleichen.
-- [ ] API-Vertrag V1.1 in `contracts/http-api/logs-v1.md` oder neuer `logs-v1.1.md` vorbereiten.
-- [ ] Entscheidung treffen: API-Kompatibilitätsschicht für alte `/api/logs` behalten oder früh entfernen.
-- [ ] Composer im PHP-Service einführen.
-- [ ] PHP-Autoloading sauber auf PSR-4 umstellen.
-- [ ] Erste PHPUnit-Infrastruktur einrichten.
-- [ ] curl-Smoke-Tests in scripts erweitern.
-- [ ] MariaDB-Schema in migrationsartige Dateien zerlegen.
-- [ ] Tabellen für Tenants, Sources, Clients/Credentials, Scopes und Audit entwerfen.
-- [ ] Java-Client-Konfiguration von URL/Limit auf vollständige Client-Konfiguration ausbauen.
+- [ ] LS-014: Code stärker kommentieren.
+- [ ] LS-015/LS-019: Java-Client-Konfiguration einführen.
+- [ ] LS-016: IONOS-/Deployment-Dokumentation ausarbeiten.
+- [ ] LS-017: MariaDB-Skripte für lokal und IONOS dokumentieren.
+- [ ] LS-018: Dokument "Von ungeschützt zu sicher" weiter ausarbeiten.
+- [ ] `docs/learning/06-session-state.md` am Ende der nächsten Sitzung aktualisieren.
 
 ## Service
 
@@ -25,7 +32,7 @@ Diese Datei enthält nur konkrete Arbeitsaufgaben. Die Begründung und der rote 
 - [ ] Bearer-Token-Authentifizierung vorbereiten.
 - [ ] Principal-Typen `source` und `client` trennen.
 - [ ] Scope-Prüfung für `events.ingest`, `events.read`, `sources.read` einführen.
-- [ ] Optionalen Token-Pepper in `.env` berücksichtigen.
+- [ ] Optionalen Token-Pepper in `.env-logsink` berücksichtigen.
 - [ ] File-basiertes Rate-Limiting einführen.
 - [ ] IP-Allowlisting für Sources einführen.
 - [ ] Audit-Logging in Datenbank ergänzen.
@@ -33,6 +40,8 @@ Diese Datei enthält nur konkrete Arbeitsaufgaben. Die Begründung und der rote 
 
 ## Datenbank
 
+- [ ] `database/mariadb/README.md` ergänzen.
+- [ ] Nutzung der SQL-Dateien lokal und bei IONOS dokumentieren.
 - [ ] Bestehende Tabelle `log_entries` als Legacy/V0 einordnen.
 - [ ] Neue Tabellen für strukturierte Logereignisse planen.
 - [ ] `ingest_requests` ergänzen.
@@ -46,7 +55,9 @@ Diese Datei enthält nur konkrete Arbeitsaufgaben. Die Begründung und der rote 
 
 ## Java-Client
 
+- [ ] Hart codierte Service-URL entfernen.
 - [ ] `client-settings.example.json` einführen.
+- [ ] `client-settings.json` in `.gitignore` aufnehmen.
 - [ ] Settings-Loader ergänzen.
 - [ ] Route-Parameter und API-Version konfigurierbar machen.
 - [ ] Bearer-Token für Lesezugriffe unterstützen.
@@ -64,10 +75,9 @@ Diese Datei enthält nur konkrete Arbeitsaufgaben. Die Begründung und der rote 
 
 ## Dokumentation
 
-- [ ] `docs/learning/06-session-state.md` am Ende jeder Arbeitssitzung aktualisieren.
-- [ ] `docs/learning/05-decision-log.md` bei Architekturentscheidungen ergänzen.
+- [ ] `docs/learning/10-git-workflows.md` erstellen.
 - [ ] `CHANGELOG.md` bei relevanten Projektänderungen fortschreiben.
 - [ ] README des PHP-Service an neue Start-/Testbefehle anpassen.
 - [ ] README des Java-Clients an neue Konfiguration anpassen.
-- [ ] IONOS-Deployment-Kapitel konkretisieren, sobald Hosting-Variante feststeht.
+- [ ] IONOS-Deployment-Kapitel konkretisieren.
 - [ ] phpDocumentor-Kapitel ergänzen, sobald Composer eingeführt ist.

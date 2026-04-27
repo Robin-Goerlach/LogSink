@@ -2,69 +2,174 @@
 
 ## Aktueller Stand
 
-Datum: 2026-04-25
+Datum: 2026-04-27  
+Sitzung: Montagmorgen, Start gegen 07:30 Uhr  
+Arbeitsmodus: Lehrprojekt, atomare Schritte, Service/Datenbank/Client gemeinsam betrachten.
 
-Branch-Status zuletzt bekannt:
+## Git-Stand zuletzt bekannt
 
-- `main` enthält die neue Monorepo-Struktur.
-- Arbeitsbaum war nach Merge sauber.
-- lokales `.env` und `service.log` dürfen untracked/ignored sein.
-
-## Aktuelle Repository-Struktur
+Relevante Commits:
 
 ```text
-LogSink/
-├── clients/java-log-viewer
-├── contracts/http-api
-├── database/mariadb
-├── docs
-├── scripts
-└── services/log-sink
+bed83b4 Move PHP diagnostic script to tools
+ee9b66d Fix external LogSink environment file lookup
+5cde54c Support external LogSink environment file; splitting SQL in three
+94292a3 Der Remote-V1-Service läuft und der Java-Client kann ihn lesen.
+d835d1c Add LogSink learning plan documents
 ```
 
-## Zuletzt erledigt
+Zuletzt war lokal noch offen:
 
-- Repository-Struktur bereinigt.
-- Java-Client in `clients/java-log-viewer` integriert.
-- PHP-Service in `services/log-sink` eingeordnet.
-- Mustralla/MustelaLogAPI-Dokumente bereitgestellt.
-- Zielrichtung geklärt: ungeschützte V1 wird als Lernbasis genutzt.
-- Learning-Dokumentationspaket erzeugt.
+```text
+deleted: services/log-sink/php-diagnose.php
+```
 
-## Nächster sinnvoller Schritt
+Diese Löschung soll committed werden, weil das Diagnose-Skript nicht mehr im Service-Verzeichnis liegen soll.
 
-1. Dieses ZIP ins Repository einspielen.
-2. Commit erstellen.
-3. `docs/learning/01-source-analysis.md` gemeinsam prüfen.
-4. Danach mit `LS-000` bis `LS-013` die aktuelle Basis reproduzierbar testen.
-5. Erst dann mit API-Basis-Schritten ab `LS-020` beginnen.
-
-## Offene Punkte
-
-- Soll die alte `/api/logs`-Schnittstelle langfristig als Legacy erhalten bleiben?
-- Soll der neue API-Vertrag als `logs-v1.md` aktualisiert oder als `logs-v1.1.md` daneben geführt werden?
-- Welche IONOS-Umgebung ist später relevant: Shared Hosting, VPS oder Managed Server?
-- Soll der Java-Client zuerst vollständig auf neue API umgestellt werden oder Legacy/API-v1 parallel unterstützen?
-- Wie heißen die endgültigen DB-Tabellen für Credentials?
-- Soll es später einen WPF-Client im selben Repository geben?
-
-## Warnung für nächste Sitzung
-
-Nicht direkt anfangen zu programmieren.
-
-Zuerst:
+Empfohlener Git-Schritt:
 
 ```bash
-git status
-git log --oneline --decorate -5
+git add -u services/log-sink/php-diagnose.php
+git commit -m "Remove diagnostic script from service directory"
+git push origin main
 ```
 
-Dann lesen:
+## Technischer Stand
 
-1. `TODO.md`
-2. `docs/learning/06-session-state.md`
-3. `docs/learning/03-learning-plan.md`
+### IONOS-Service
 
-## Merksatz
+Deployter Servicepfad:
 
-Wir bauen nicht schnell. Wir bauen nachvollziehbar.
+```text
+/homepages/12/d387530851/htdocs/de.sasd/api/logsink
+```
+
+Öffentliche V1-Test-URL:
+
+```text
+http://api.sasd.de/logsink/index.php?limit=5
+```
+
+Der Service liefert erfolgreich JSON mit Status `ok` und den Demo-Logeinträgen.
+
+### Diagnoseergebnisse
+
+Festgestellt am 2026-04-27:
+
+```text
+PHP_VERSION=8.4.20
+PHP_SAPI=cgi-fcgi
+pdo_mysql=yes
+src/Bootstrap.php exists=yes
+public/index.php exists=yes
+var/log writable=yes
+DB_CONNECTION=ok
+LOG_ENTRIES=10
+```
+
+### Konfiguration
+
+Die ursprüngliche Datei:
+
+```text
+logsink/.env
+```
+
+wurde aus dem öffentlich erreichbaren Service-Verzeichnis entfernt.
+
+Die IONOS-Konfiguration liegt jetzt als:
+
+```text
+/homepages/.../htdocs/de.sasd/.env-logsink
+```
+
+Der Service findet sie über `Bootstrap::resolveEnvFile()`.
+
+Sicherheitschecks:
+
+```bash
+curl -i "http://api.sasd.de/logsink/.env"
+curl -i "http://api.sasd.de/logsink/_.env"
+curl -i "http://api.sasd.de/.env-logsink"
+```
+
+Erwartung: keine Secret-Inhalte per HTTP.
+
+### Diagnose-Skript
+
+Das Diagnose-Skript wurde vom Server entfernt.
+
+Server-Test:
+
+```bash
+curl -i "http://api.sasd.de/logsink/php-diagnose.php"
+```
+
+Erwartung: 404 oder vergleichbare IONOS-Fehlerseite.
+
+Im Repository soll das Skript nur als Werkzeug liegen:
+
+```text
+tools/diagnostics/php-diagnose.php
+```
+
+oder später optional:
+
+```text
+tools/diagnostics/php-diagnose.php.example
+```
+
+### Java-Client
+
+Build erfolgreich:
+
+```bash
+mvn -f clients/java-log-viewer/pom.xml clean package
+```
+
+Der Client zeigt Remote-Logs an, wenn vorläufig diese URL verwendet wird:
+
+```java
+private static final String DEFAULT_SERVICE_URL = "http://api.sasd.de/logsink/index.php";
+```
+
+Diese harte Codierung ist nur ein Provisorium und soll durch eine Konfigurationsdatei ersetzt werden.
+
+### Datenbank
+
+Die SQL-Struktur wurde getrennt:
+
+```text
+database/mariadb/000_create_database_local.sql
+database/mariadb/001_schema_existing_database.sql
+database/mariadb/010_demo_data.sql
+```
+
+Ziel:
+
+- lokal: `000` + `001` + `010`
+- IONOS: `001` + `010`
+
+## Erledigte LS-Schritte
+
+- LS-000 Repository-Status prüfen.
+- LS-010 PHP-Service remote erreichbar machen.
+- LS-011 MariaDB-Demo-Daten bei IONOS prüfen.
+- LS-012 curl-GET-Test remote erfolgreich.
+- LS-013 Java-Client mit Maven bauen und starten.
+- LS-013b Remote-Service mit curl diagnostizieren.
+- LS-016 teilweise: externe `.env-logsink`, public/index.php, Serverdiagnose und Entfernen öffentlicher `.env`.
+
+## Nächste Schritte
+
+1. `services/log-sink/php-diagnose.php`-Löschung committen.
+2. Diese Dokumentation einspielen und committen.
+3. LS-014: Code stärker kommentieren.
+4. LS-015/LS-019: Java-Client-Konfiguration einführen.
+5. LS-016: IONOS-Deployment-Dokumentation ausarbeiten.
+6. LS-017: MariaDB-Skripte dokumentieren.
+7. LS-018: Dokument "Von ungeschützt zu sicher" weiterführen.
+
+## Warnung
+
+Die V1 ist weiterhin ungeschützt. Die Konfiguration ist jetzt besser geschützt, aber die HTTP-Endpunkte sind noch offen.
