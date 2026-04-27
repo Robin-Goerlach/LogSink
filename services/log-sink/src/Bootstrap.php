@@ -10,7 +10,8 @@ final class Bootstrap
     {
         self::registerAutoloader();
 
-        $config = Config::fromEnvFile($projectRoot . '/.env');
+        $config = Config::fromEnvFile(self::resolveEnvFile($projectRoot));
+
         $logger = new ServiceLogger($projectRoot, $config);
         $database = new Database($config);
         $repository = new LogRepository($database);
@@ -36,32 +37,51 @@ final class Bootstrap
             }
         });
     }
-    
-private static function resolveEnvFile(string $projectRoot): string
-{
-    $explicitEnvFile = getenv('LOGSINK_ENV_FILE');
 
-    if (is_string($explicitEnvFile) && $explicitEnvFile !== '') {
-        return $explicitEnvFile;
-    }
+    private static function resolveEnvFile(string $projectRoot): string
+    {
+        $explicitEnvFile = getenv('LOGSINK_ENV_FILE');
 
-    $candidates = [];
-
-    $documentRoot = $_SERVER['DOCUMENT_ROOT'] ?? null;
-
-    if (is_string($documentRoot) && $documentRoot !== '') {
-        $candidates[] = dirname($documentRoot) . '../../.env-logsink';
-    }
-
-    $candidates[] = dirname($projectRoot) . '/.env-logsink';
-    $candidates[] = $projectRoot . '/.env';
-
-    foreach ($candidates as $candidate) {
-        if (is_file($candidate)) {
-            return $candidate;
+        if (is_string($explicitEnvFile) && $explicitEnvFile !== '') {
+            return $explicitEnvFile;
         }
-    }
 
-    return $projectRoot . '/.env';
-}    
+        $candidates = [];
+
+        /*
+         * IONOS-Beispiel:
+         *
+         * projectRoot:
+         *   /homepages/.../htdocs/de.sasd/api/logsink
+         *
+         * gewünschte Datei:
+         *   /homepages/.../htdocs/de.sasd/.env-logsink
+         *
+         * Das ist zwei Ebenen über dem Service-Verzeichnis.
+         */
+        $candidates[] = dirname(dirname($projectRoot)) . '/.env-logsink';
+
+        /*
+         * Alternative: eine Ebene über dem Service-Verzeichnis.
+         *
+         * Beispiel:
+         *   /homepages/.../htdocs/de.sasd/api/.env-logsink
+         */
+        $candidates[] = dirname($projectRoot) . '/.env-logsink';
+
+        /*
+         * Lokale Entwicklungsumgebung:
+         *
+         *   services/log-sink/.env
+         */
+        $candidates[] = $projectRoot . '/.env';
+
+        foreach ($candidates as $candidate) {
+            if (is_file($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return $projectRoot . '/.env';
+    }
 }

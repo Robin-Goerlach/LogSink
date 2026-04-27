@@ -16,7 +16,7 @@ echo "public/index.php exists=" . (is_file(__DIR__ . '/public/index.php') ? 'yes
 echo "var/log exists=" . (is_dir(__DIR__ . '/var/log') ? 'yes' : 'no') . PHP_EOL;
 echo "var/log writable=" . (is_writable(__DIR__ . '/var/log') ? 'yes' : 'no') . PHP_EOL;
 
-$envFile = __DIR__ . '/.env';
+$envFile = dirname(dirname(__DIR__)) . '/.env-logsink';
 
 if (!is_file($envFile)) {
     echo PHP_EOL . "No .env file found." . PHP_EOL;
