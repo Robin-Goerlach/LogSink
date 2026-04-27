@@ -27,7 +27,8 @@ import java.util.List;
  * Hauptfenster des Java-Clients.
  */
 public final class LogViewerFrame extends JFrame {
-    private static final String DEFAULT_SERVICE_URL = "http://127.0.0.1:8080/api/logs";
+    // private static final String DEFAULT_SERVICE_URL = "http://127.0.0.1:8080/api/logs";
+    private static final String DEFAULT_SERVICE_URL = "http://api.sasd.de/logsink/index.php";
 
     private final LogServiceClient client = new LogServiceClient();
     private final LogTableModel tableModel = new LogTableModel();

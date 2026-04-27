@@ -15,11 +15,11 @@
 --   die Datenbank nur intern erreichbar sein.
 -- ============================================================================
 
-CREATE DATABASE IF NOT EXISTS sasd_logging
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
+-- CREATE DATABASE IF NOT EXISTS sasd_logging
+--  CHARACTER SET utf8mb4
+--  COLLATE utf8mb4_unicode_ci;
 
-USE sasd_logging;
+-- USE sasd_logging;
 
 -- ----------------------------------------------------------------------------
 -- Tabelle für unveränderte Logmeldungen
