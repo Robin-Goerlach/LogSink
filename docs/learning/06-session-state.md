@@ -3,12 +3,32 @@
 ## Aktueller Stand
 
 Datum: 2026-04-28  
-Sitzung: Dienstagmorgen  
+Sitzung: Dienstag  
 Arbeitsmodus: Lehrprojekt, atomare Schritte, Service/Datenbank/Client gemeinsam betrachten.
 
-## Rückblick Montag
+## Git-Stand zuletzt bekannt
 
-Am Montag wurde ein wichtiger End-to-End-Stand erreicht:
+Aktueller sauberer Stand nach LS-019:
+
+```text
+main
+origin/main
+working tree clean
+```
+
+Wichtige letzte Commits:
+
+```text
+839c477 Merge pull request #2 from Robin-Goerlach/feature/java-viewer-settings
+6c3fb86 Ignore editor swap files
+2687749 Remove editor swap file
+07a9bc8 Add explanatory comments to current V1 code
+dba5742 Update LogSink learning docs for Tuesday planning
+```
+
+## Rückblick Montag/Dienstag
+
+Erreicht:
 
 - PHP-Service läuft bei IONOS.
 - Java-Viewer kann Remote-Logs anzeigen.
@@ -20,6 +40,8 @@ Am Montag wurde ein wichtiger End-to-End-Stand erreicht:
 - externe `.env-logsink` wurde eingeführt.
 - SQL wurde in lokale Datenbankerzeugung, Schema und Demo-Daten getrennt.
 - Diagnose-Skript wurde in `tools/diagnostics` verschoben.
+- Code von PHP-Service und Java-Viewer wurde ausführlich kommentiert.
+- Java-Viewer-Konfiguration wurde eingeführt.
 
 ## Aktuelle technische Basis
 
@@ -31,15 +53,6 @@ V1-URL bei IONOS:
 http://api.sasd.de/logsink/index.php?limit=5
 ```
 
-Erwartetes Ergebnis:
-
-```json
-{
-  "status": "ok",
-  "items": []
-}
-```
-
 ### Datenbank
 
 ```text
@@ -49,7 +62,7 @@ database/mariadb/
 └── 010_demo_data.sql
 ```
 
-### Konfiguration
+### Konfiguration des PHP-Service
 
 Echte IONOS-Konfiguration:
 
@@ -71,52 +84,34 @@ Der Java-Viewer baut mit:
 mvn -f clients/java-log-viewer/pom.xml clean package
 ```
 
-Die URL ist aktuell noch provisorisch im Code. Das soll durch eine Konfigurationsdatei ersetzt werden.
-
-## Neuer wichtiger Punkt
-
-Bisher wurde hauptsächlich der Java-Viewer betrachtet. Es fehlen schreibende Beispiel-Clients.
-
-Für das Projekt werden benötigt:
-
-- curl-Beispiele,
-- PHP-Logging-Client,
-- Java-Logging-Client,
-- später ggf. JavaScript/Node und C#/.NET.
-
-Diese Sender-Clients sollen mit dem Service mitwachsen:
+Der Java-Viewer nutzt jetzt Konfigurationsdateien:
 
 ```text
-ungeschütztes POST -> strukturierter JSON-Body -> Bearer-Token -> Source-Principal -> Scope events.ingest
+clients/java-log-viewer/client-settings.example.json
+clients/java-log-viewer/client-settings.json
 ```
 
-## Dokumentationsbereinigung
+`client-settings.example.json` wird committed.  
+`client-settings.json` wird lokal verwendet und ignoriert.
 
-Es gab zwei ähnlich benannte Dokumente:
+Der Client sucht Konfiguration in dieser Reihenfolge:
 
-```text
-10-from-unprotected-to-secure.md
-13-from-unprotected-to-secure.md
-```
-
-Kanonisch soll künftig sein:
-
-```text
-10-from-unprotected-to-secure.md
-```
-
-`13-from-unprotected-to-secure.md` wird entfernt.
+1. `-Dlogsink.viewer.config=...`
+2. `LOGSINK_VIEWER_CONFIG`
+3. `client-settings.json`
+4. `clients/java-log-viewer/client-settings.json`
+5. `~/.logsink/java-viewer-settings.json`
 
 ## Nächste Arbeitsschritte
 
-1. Dokumentation bereinigen und committen.
-2. Doppelte Sicherheitsdatei entfernen.
-3. `11-v1-code-walkthrough-and-first-hardening.md` übernehmen.
-4. `12-logging-client-plan.md` übernehmen.
-5. Code-Kommentierung vorbereiten.
-6. Danach MariaDB-README prüfen.
-7. Danach Java-Client-Konfiguration angehen.
-8. Danach schreibende Beispiel-Clients planen/umsetzen.
+1. `README_LEARNING_DOCS.md` aktualisieren und committen.
+2. TODO/CHANGELOG an LS-019 anpassen.
+3. Schreibende Logging-Clients final platzieren: `examples/` oder `clients/`.
+4. curl-Sender für aktuelle ungeschützte V1 erstellen.
+5. PHP-Logging-Client erstellen.
+6. Java-Logging-Client erstellen.
+7. Tests definieren: Sender -> Service -> DB -> Viewer.
+8. Danach API-Routing und Health-Endpunkt vorbereiten.
 
 ## Warnung
 

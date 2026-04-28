@@ -4,8 +4,7 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 
 ## Sofort / Dienstag
 
-- [ ] Doppelte Sicherheitsdokumentation bereinigen: `docs/learning/13-from-unprotected-to-secure.md` entfernen.
-- [ ] Dokumentationspaket vom 2026-04-28 einspielen.
+- [ ] `README_LEARNING_DOCS.md` aktualisieren.
 - [ ] `git status` prüfen.
 - [ ] Remote-Service prüfen: `curl -i "http://api.sasd.de/logsink/index.php?limit=5"`.
 - [ ] Sicherheitschecks wiederholen:
@@ -13,10 +12,21 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
   - [ ] `curl -i "http://api.sasd.de/logsink/_.env"`
   - [ ] `curl -i "http://api.sasd.de/.env-logsink"`
 
+## Erledigt am 2026-04-28
+
+- [x] Doppelte Sicherheitsdokumentation bereinigt.
+- [x] `10-from-unprotected-to-secure.md` als kanonisches Sicherheitsdokument festgelegt.
+- [x] `11-v1-code-walkthrough-and-first-hardening.md` ergänzt.
+- [x] `12-logging-client-plan.md` ergänzt.
+- [x] Code von PHP-Service und Java-Viewer ausführlich kommentiert.
+- [x] Editor-Swap-Datei entfernt und Swap-/Backup-Dateien ignoriert.
+- [x] Java-Viewer-Konfiguration eingeführt.
+- [x] `client-settings.example.json` eingeführt.
+- [x] lokale `client-settings.json` ignoriert.
+- [x] Hart codierte Service-URL aus `LogViewerFrame` entfernt.
+
 ## Next
 
-- [ ] LS-014 / LS-020: Code stärker kommentieren.
-- [ ] LS-015 / LS-019: Java-Client-Konfiguration einführen.
 - [ ] LS-021: Schreibende Beispiel-Clients final platzieren: `examples/` oder `clients/`.
 - [ ] LS-022: curl-Logging-Beispiele erstellen.
 - [ ] LS-023: PHP-Logging-Client erstellen.
@@ -35,11 +45,6 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 - [ ] Bearer-Token-Authentifizierung vorbereiten.
 - [ ] Principal-Typen `source` und `client` trennen.
 - [ ] Scope-Prüfung für `events.ingest`, `events.read`, `sources.read` einführen.
-- [ ] Optionalen Token-Pepper in `.env-logsink` berücksichtigen.
-- [ ] File-basiertes Rate-Limiting einführen.
-- [ ] IP-Allowlisting für Sources einführen.
-- [ ] Audit-Logging in Datenbank ergänzen.
-- [ ] Defensive Fehlerausgabe ohne Stacktraces oder SQL-Details absichern.
 
 ## Datenbank
 
@@ -48,21 +53,16 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 - [ ] `ingest_requests` ergänzen.
 - [ ] `log_events` ergänzen.
 - [ ] `access_audit` ergänzen.
-- [ ] `log_source_networks` ergänzen.
 - [ ] Credential-/Token-Tabellen für Sources und Clients ergänzen.
-- [ ] Views `api_v1_log_events` und `api_v1_log_sources` ergänzen.
-- [ ] Separate Read-/Write-Datenbankbenutzer einführen.
-- [ ] Seed-/Provisioning-Skripte für Demo-Source und Demo-Client vorbereiten.
 
 ## Java-Viewer
 
-- [ ] Hart codierte Service-URL entfernen.
-- [ ] `client-settings.example.json` einführen.
-- [ ] `client-settings.json` in `.gitignore` aufnehmen.
-- [ ] Settings-Loader ergänzen.
+- [x] Hart codierte Service-URL entfernen.
+- [x] `client-settings.example.json` einführen.
+- [x] `client-settings.json` in `.gitignore` aufnehmen.
+- [x] Settings-Loader ergänzen.
 - [ ] Route-Parameter und API-Version konfigurierbar machen.
 - [ ] Bearer-Token für Lesezugriffe unterstützen.
-- [ ] Separaten Source-/Ingest-Token für Test-Log-Versand unterstützen oder Funktion deaktivierbar machen.
 - [ ] Health-Check-Schaltfläche ergänzen.
 - [ ] Eventliste auf neues Response-Modell `ok/requestId/data` umstellen.
 
@@ -79,5 +79,4 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 ## Dokumentation
 
 - [ ] `docs/learning/10-git-workflows.md` erstellen.
-- [ ] README des Java-Viewers an neue Konfiguration anpassen.
 - [ ] phpDocumentor-Kapitel ergänzen, sobald Composer eingeführt ist.
