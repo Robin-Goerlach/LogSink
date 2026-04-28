@@ -65,3 +65,10 @@
 .DS_Store
 Thumbs.db
 .env.IONOS
+
+# Editor swap/backup files
+*.kate-swp
+.*.kate-swp
+*.swp
+*.swo
+*~
