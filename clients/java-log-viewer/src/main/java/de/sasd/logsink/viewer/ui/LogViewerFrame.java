@@ -1,6 +1,7 @@
 package de.sasd.logsink.viewer.ui;
 
 import de.sasd.logsink.viewer.client.LogServiceClient;
+import de.sasd.logsink.viewer.config.ClientSettings;
 import de.sasd.logsink.viewer.model.LogEntry;
 
 import javax.swing.BorderFactory;
@@ -34,38 +35,48 @@ import java.util.List;
  * - LogTableModel als Datenmodell der Tabelle,
  * - LogDetailDialog für Doppelklick-Details.
  *
- * Sie enthält bewusst noch keine dauerhafte Konfiguration. Die aktuell hart
- * codierte Service-URL wird in einem späteren Schritt durch eine Settings-Datei
- * ersetzt.
+ * Die Service-URL wird nicht mehr hart im Code festgelegt. Sie kommt jetzt aus
+ * ClientSettings, die wiederum aus client-settings.json geladen werden können.
  */
 public final class LogViewerFrame extends JFrame {
 
-    /*
-     * Lokale Entwicklung wäre:
-     *
-     *   http://127.0.0.1:8080/api/logs
-     *
-     * Der aktuelle IONOS-Testbetrieb ohne Rewrite nutzt:
-     *
-     *   http://api.sasd.de/logsink/index.php
-     *
-     * LogServiceClient hängt später selbst ?limit=... an.
-     */
-    private static final String DEFAULT_SERVICE_URL = "http://api.sasd.de/logsink/index.php";
-
-    private final LogServiceClient client = new LogServiceClient();
+    private final LogServiceClient client;
     private final LogTableModel tableModel = new LogTableModel();
     private final JTable table = new JTable(tableModel);
     private final TableRowSorter<LogTableModel> sorter = new TableRowSorter<>(tableModel);
 
-    private final JTextField serviceUrlField = new JTextField(DEFAULT_SERVICE_URL, 45);
-    private final JSpinner limitSpinner = new JSpinner(new SpinnerNumberModel(100, 1, 1000, 10));
+    private final JTextField serviceUrlField;
+    private final JSpinner limitSpinner;
     private final JTextField filterField = new JTextField(20);
     private final JButton refreshButton = new JButton("Aktualisieren");
-    private final JLabel statusLabel = new JLabel("Bereit");
+    private final JLabel statusLabel;
 
-    public LogViewerFrame() {
+    public LogViewerFrame(ClientSettings settings, String settingsSourceDescription) {
         super("SASD Log Viewer Java");
+
+        /*
+         * Der HTTP-Client bekommt das Timeout aus der Konfiguration.
+         *
+         * Dadurch muss später nicht im Code geändert werden, wenn ein langsamer
+         * Server oder eine entfernte Hosting-Umgebung mehr Zeit braucht.
+         */
+        this.client = new LogServiceClient(settings.effectiveTimeoutSeconds());
+
+        /*
+         * Die Oberfläche zeigt die geladene Service-URL an. Der Benutzer kann
+         * sie weiterhin direkt im UI ändern. Das ist praktisch für schnelle
+         * Tests, ersetzt aber nicht die dauerhafte Konfiguration in JSON.
+         */
+        this.serviceUrlField = new JTextField(settings.effectiveServiceUrl(), 45);
+
+        this.limitSpinner = new JSpinner(new SpinnerNumberModel(
+            settings.effectiveDefaultLimit(),
+            1,
+            1000,
+            10
+        ));
+
+        this.statusLabel = new JLabel("Bereit - Konfiguration: " + settingsSourceDescription);
 
         configureFrame();
         configureTable();
