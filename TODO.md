@@ -4,13 +4,11 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 
 ## Sofort / Dienstag
 
-- [ ] `README_LEARNING_DOCS.md` aktualisieren.
-- [ ] `git status` prüfen.
+- [ ] curl-Logbeispiele einspielen.
 - [ ] Remote-Service prüfen: `curl -i "http://api.sasd.de/logsink/index.php?limit=5"`.
-- [ ] Sicherheitschecks wiederholen:
-  - [ ] `curl -i "http://api.sasd.de/logsink/.env"`
-  - [ ] `curl -i "http://api.sasd.de/logsink/_.env"`
-  - [ ] `curl -i "http://api.sasd.de/.env-logsink"`
+- [ ] Roundtrip-Smoke-Test ausführen.
+- [ ] Java-Viewer starten und prüfen, ob gesendete Meldungen sichtbar sind.
+- [ ] API-Vertrag historisieren: aktueller `index.php`-Betrieb vs. spätere `/api`-/`route`-API.
 
 ## Erledigt am 2026-04-28
 
@@ -25,21 +23,23 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 - [x] lokale `client-settings.json` ignoriert.
 - [x] Hart codierte Service-URL aus `LogViewerFrame` entfernt.
 
-## Next
+## Examples
 
-- [ ] LS-021: Schreibende Beispiel-Clients final platzieren: `examples/` oder `clients/`.
-- [ ] LS-022: curl-Logging-Beispiele erstellen.
-- [ ] LS-023: PHP-Logging-Client erstellen.
-- [ ] LS-024: Java-Logging-Client erstellen.
-- [ ] LS-025: Sender-Clients in Testplan aufnehmen.
-- [ ] LS-026: Sender-Clients später an Authentifizierung anpassen.
-- [ ] `docs/learning/06-session-state.md` am Ende der Sitzung aktualisieren.
+- [x] EX-001: Struktur für Beispiele festlegen.
+- [x] EX-002: curl-Sender für JSON/Text/Error erstellen.
+- [x] EX-003: curl-Reader zur Verifikation erstellen.
+- [x] EX-004: Roundtrip-Smoke-Test erstellen.
+- [ ] EX-005: PHP-Logging-Client erstellen.
+- [ ] EX-006: Java-Logging-Client erstellen.
+- [ ] EX-007: Sender-Clients später an Authentifizierung anpassen.
 
 ## Service
 
+- [ ] LS-021: Request-ID einführen.
+- [ ] LS-022: Einheitliches JSON-Antwortmodell einführen.
+- [ ] LS-023: Einfaches Routing einführen.
+- [ ] LS-024: Front-Controller-Route-Parameter ergänzen.
 - [ ] Health-Endpunkt `/api/v1/health` ergänzen.
-- [ ] Front-Controller-Routing über `index.php?route=/api/v1/...` einführen.
-- [ ] Einheitliches JSON-Antwortmodell mit `ok`, `requestId`, `data` bzw. `error` einführen.
 - [ ] JSON-Body-Regeln durchsetzen: Content-Type, Maximalgröße, JSON-Objekt als Root.
 - [ ] Ingest-Endpunkt `/api/v1/ingest/events` für strukturierte Events einführen.
 - [ ] Bearer-Token-Authentifizierung vorbereiten.
@@ -66,17 +66,8 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 - [ ] Health-Check-Schaltfläche ergänzen.
 - [ ] Eventliste auf neues Response-Modell `ok/requestId/data` umstellen.
 
-## Schreibende Logging-Clients
-
-- [ ] Ordnerstruktur für Sender-Beispiele festlegen.
-- [ ] curl-Sender für aktuelle ungeschützte V1.
-- [ ] PHP-Sender für aktuelle ungeschützte V1.
-- [ ] Java-Sender für aktuelle ungeschützte V1.
-- [ ] Gemeinsame Beispiel-Logmeldung definieren.
-- [ ] Tests definieren: Sender -> Service -> DB -> Viewer.
-- [ ] Spätere Token-Variante vorbereiten.
-
 ## Dokumentation
 
+- [ ] `contracts/http-api/logs-v1.md` an aktuellen V0/V1-Betrieb anpassen.
 - [ ] `docs/learning/10-git-workflows.md` erstellen.
 - [ ] phpDocumentor-Kapitel ergänzen, sobald Composer eingeführt ist.

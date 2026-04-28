@@ -11,32 +11,50 @@ Diese Clients sind aus zwei Gründen wichtig:
 1. Sie zeigen, wie andere Programme den Service benutzen.
 2. Sie sind Testwerkzeuge für den Service.
 
-## Ziel
+## Nummerierung
 
-Wir erstellen im Projekt schrittweise Beispiel-Clients für das Schreiben von Logmeldungen.
+Die LS-Nummern `LS-021` bis `LS-024` sind im Haupt-Lehrplan bereits für API-Umbauten belegt:
 
-Mögliche Struktur:
+```text
+LS-021: Request-ID einführen
+LS-022: Einheitliches JSON-Antwortmodell einführen
+LS-023: Einfaches Routing einführen
+LS-024: Front-Controller-Route-Parameter ergänzen
+```
+
+Deshalb verwenden die Beispiel-Clients eine eigene Nummerierung:
+
+```text
+EX-001, EX-002, EX-003, ...
+```
+
+## Zielstruktur
+
+Für das Lehrprojekt verwenden wir `examples/`, weil diese Programme vor allem Beispiele und Testwerkzeuge sind.
 
 ```text
 examples/
-├── curl/
-├── php/
-├── java/
-├── javascript/
-└── dotnet/
+├── README.md
+├── log-senders/
+│   ├── README.md
+│   └── curl/
+└── log-readers/
+    ├── README.md
+    └── curl/
 ```
 
-Alternativ:
+## Warum auch `examples/log-readers/`?
 
-```text
-clients/
-├── java-log-viewer/
-├── java-log-sender/
-├── php-log-sender/
-└── dotnet-log-sender/
-```
+Der Java-Viewer ist der eigentliche grafische Reader.
 
-Für ein Lehrprojekt ist `examples/` wahrscheinlich besser, weil diese Programme vor allem Beispiele und Testwerkzeuge sind.
+Trotzdem sind kleine curl-Reader nützlich, weil man damit schnell prüfen kann:
+
+- Ist der Service erreichbar?
+- Kommt JSON zurück?
+- Ist eine frisch gesendete Meldung sichtbar?
+- Funktioniert ein Roundtrip ohne GUI?
+
+Die Reader-Beispiele sind also vor allem Diagnose- und Testwerkzeuge.
 
 ## Entwicklungsstufen
 
@@ -46,7 +64,7 @@ Die Sender-Clients wachsen mit dem Service.
 
 Der Client sendet einfach einen Body an den aktuellen V1-Service.
 
-Beispiel mit curl:
+Aktueller IONOS-Testbetrieb:
 
 ```bash
 curl -i -X POST "http://api.sasd.de/logsink/index.php" \
@@ -91,84 +109,40 @@ Clients behandeln:
 - 429 Rate-Limit,
 - 500 Serverfehler.
 
-## Geplante Beispiele
+## Beispiel-Schritte
 
-### curl-Beispiele
+### EX-001: Struktur für Beispiele
 
-Ordner:
-
-```text
-examples/curl/
-```
-
-Dateien:
+Ziel:
 
 ```text
-post-raw-log.sh
-post-json-event.sh
-post-json-event-with-token.sh
+examples/log-senders
+examples/log-readers
 ```
 
-Vorteil: sofort verständlich und gut für Smoke-Tests.
+### EX-002: curl-Logging-Beispiele erstellen
 
-### PHP-Sender
+Erste Skripte für ungeschütztes POST.
 
-Ordner:
+### EX-003: curl-Reader zur Verifikation erstellen
 
-```text
-examples/php-log-sender/
-```
+GET-Beispiel, um die letzten Meldungen zu lesen.
 
-Lerninhalt:
+### EX-004: Roundtrip-Smoke-Test erstellen
 
-- `file_get_contents()` mit stream context oder cURL-Erweiterung,
-- JSON erzeugen,
-- HTTP-Header setzen,
-- Fehler prüfen.
+Eine Meldung senden und danach prüfen, ob sie über GET sichtbar ist.
 
-### Java-Sender
+### EX-005: PHP-Logging-Client erstellen
 
-Ordner:
+Einfacher PHP-Sender.
 
-```text
-examples/java-log-sender/
-```
+### EX-006: Java-Logging-Client erstellen
 
-Lerninhalt:
+Einfacher Java-Sender.
 
-- Java `HttpClient`,
-- JSON mit Jackson,
-- Timeout,
-- Statuscode-Auswertung.
+### EX-007: Sender-Clients an Authentifizierung anpassen
 
-### JavaScript/Node-Sender
-
-Später möglich:
-
-```text
-examples/node-log-sender/
-```
-
-Lerninhalt:
-
-- `fetch`,
-- JSON,
-- Header,
-- async/await.
-
-### C#/.NET-Sender
-
-Später möglich:
-
-```text
-examples/dotnet-log-sender/
-```
-
-Lerninhalt:
-
-- `HttpClient`,
-- JSON-Serialisierung,
-- WPF-/Service-Integration.
+Sobald Bearer-Tokens eingeführt werden, werden die Sender angepasst.
 
 ## Teststrategie
 
@@ -188,54 +162,6 @@ Lerninhalt:
 - später: fehlender Token,
 - später: falscher Token,
 - später: Token ohne Scope.
-
-## Dokumentationsregel
-
-Jeder Sender bekommt eine eigene README:
-
-```text
-examples/php-log-sender/README.md
-examples/java-log-sender/README.md
-```
-
-Jede README erklärt:
-
-- Zweck,
-- Voraussetzungen,
-- Konfiguration,
-- Start,
-- erwartetes Ergebnis,
-- typische Fehler.
-
-## LS-Schritte
-
-### LS-021: Schreibende Beispiel-Clients planen
-
-Dieses Dokument ist der Startpunkt.
-
-### LS-022: curl-Logging-Beispiele erstellen
-
-Erste Skripte für ungeschütztes POST und spätere Token-Variante.
-
-### LS-023: PHP-Logging-Client erstellen
-
-Einfacher PHP-Sender.
-
-### LS-024: Java-Logging-Client erstellen
-
-Einfacher Java-Sender.
-
-### LS-025: Sender-Clients in Testplan aufnehmen
-
-Service-Test besteht aus:
-
-```text
-Sender -> Service -> Datenbank -> Viewer
-```
-
-### LS-026: Sender-Clients an Authentifizierung anpassen
-
-Sobald Bearer-Tokens eingeführt werden, werden die Sender angepasst.
 
 ## Wichtig
 

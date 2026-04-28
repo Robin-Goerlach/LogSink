@@ -8,32 +8,21 @@ Das Format orientiert sich lose an Keep a Changelog, ohne bereits eine formale R
 
 ### Added
 
-- Ausführliches Dokument `docs/learning/11-v1-code-walkthrough-and-first-hardening.md` zur aktuellen funktionierenden V1, SQL, PHP-Service, Java-Viewer und erster Sicherungsmaßnahme.
-- Plan `docs/learning/12-logging-client-plan.md` für schreibende Logging-Clients und deren Tests.
-- MariaDB-README mit Erklärung der SQL-Dateien, Trigger, View und lokaler/IONOS-Nutzung.
-- Ausführliche Lern-Kommentare im aktuellen PHP-Service und Java-Viewer-Code.
-- Java-Viewer-Konfiguration über `client-settings.example.json` und lokale `client-settings.json`.
-- `ClientSettings` und `ClientSettingsLoader` für den Java-Viewer.
+- Erste curl-Beispiele für schreibende Log-Clients unter `examples/log-senders/curl`.
+- curl-Reader-Beispiel unter `examples/log-readers/curl` zur schnellen Verifikation.
+- Roundtrip-Smoke-Test für den aktuellen V0/V1-Flow: Sender -> Service -> Datenbank -> GET-API.
+- Beispiel-Dokumentation unter `examples/`.
+- Eigene EX-Nummerierung für Beispiele, damit keine Konflikte mit LS-Schritten aus dem Haupt-Lehrplan entstehen.
 
 ### Changed
 
-- `10-from-unprotected-to-secure.md` ist das kanonische Sicherheits-Lerndokument.
-- `13-from-unprotected-to-secure.md` wurde entfernt, um doppelte Dokumentation zu vermeiden.
-- `docs/learning/README.md` wurde an die bereinigte Dokumentstruktur angepasst.
-- `docs/learning/06-session-state.md` wurde auf Dienstag aktualisiert.
-- `TODO.md` wurde auf die nächsten Schritte Client-Konfiguration und Sender-Clients ausgerichtet.
-- Java-Viewer liest Service-URL, Default-Limit und Timeout nun aus Konfiguration statt aus hart codierter Konstante.
-- Java-Viewer-README wurde um Konfiguration, Suchreihenfolge und Startvarianten ergänzt.
-
-### Removed
-
-- Editor-Swap-Datei aus dem Repository entfernt.
+- `docs/learning/12-logging-client-plan.md` verwendet jetzt EX-Nummern statt kollidierender LS-Nummern.
+- `TODO.md` unterscheidet zwischen LS-Schritten für den Service und EX-Schritten für Beispiele.
 
 ### Security
 
-- Der funktionierende IONOS-Stand wird als erster abgesicherter Zwischenstand dokumentiert: Die HTTP-API ist weiterhin ungeschützt, aber die echte Konfigurationsdatei liegt nicht mehr im öffentlich erreichbaren Service-Verzeichnis.
-- Lokale `client-settings.json` wird ignoriert, weil dort später lokale URLs und Tokens stehen können.
-- Editor-Swap- und Backup-Dateien werden ignoriert.
+- Die curl-Beispiele nutzen noch die bewusst ungeschützte V0/V1-API.
+- Spätere EX-Schritte müssen Bearer-Token und Source-Scopes ergänzen.
 
 ## [0.1.0] - 2026-04-25
 
