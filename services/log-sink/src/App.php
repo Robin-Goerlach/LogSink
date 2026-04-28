@@ -6,6 +6,22 @@ namespace Sasd\LogSink;
 
 use Throwable;
 
+/**
+ * Verarbeitet den aktuellen HTTP-Request.
+ *
+ * Diese Klasse ist in der V1 absichtlich sehr einfach.
+ *
+ * Aktueller Ablauf:
+ *
+ * - POST => Request-Body unverändert als Logmeldung speichern
+ * - GET  => letzte Logmeldungen lesen
+ * - andere Methoden => 405 Method Not Allowed
+ *
+ * Wichtig:
+ * --------
+ * App.php ist noch kein ausgewachsener Router. Es gibt noch keine sauberen
+ * Routen wie /api/v1/health oder /api/v1/events. Das kommt später.
+ */
 final class App
 {
     public function __construct(
@@ -15,6 +31,14 @@ final class App
     ) {
     }
 
+    /**
+     * Einstiegspunkt für den aktuellen Request.
+     *
+     * Diese Methode entscheidet anhand der HTTP-Methode, was passieren soll.
+     *
+     * Bei Fehlern wird eine JSON-Fehlerantwort erzeugt. Gleichzeitig schreibt
+     * ServiceLogger den technischen Fehler in var/log/service.log.
+     */
     public function handle(): void
     {
         try {
@@ -36,18 +60,43 @@ final class App
                 'message' => 'Use POST to write logs or GET to read latest logs.',
             ], 405);
         } catch (Throwable $exception) {
+            /*
+             * Wichtig für später:
+             *
+             * Im Entwicklungsmodus darf die Fehlermeldung sichtbar sein.
+             * Im produktionsnahen Betrieb sollte APP_DEBUG=false sein, damit
+             * keine internen Details an Clients ausgeliefert werden.
+             */
             $this->logger->error('Unhandled service error', $exception);
 
             $this->json([
                 'status' => 'error',
                 'error' => 'internal_server_error',
-                'message' => $this->config->bool('APP_DEBUG', false) ? $exception->getMessage() : 'Internal server error.',
+                'message' => $this->config->bool('APP_DEBUG', false)
+                    ? $exception->getMessage()
+                    : 'Internal server error.',
             ], 500);
         }
     }
 
+    /**
+     * Speichert eine Logmeldung.
+     *
+     * V1-Prinzip:
+     * -----------
+     * Der Body wird unverändert gespeichert. Der Service interessiert sich noch
+     * nicht dafür, ob der Body JSON, Text oder etwas anderes ist.
+     *
+     * Das macht den ersten Prototyp sehr einfach, ist aber noch nicht das
+     * spätere Ziel. Später wird ein strukturierter Ingest-Endpunkt eingeführt.
+     */
     private function writeLog(): void
     {
+        /*
+         * php://input ist der rohe HTTP-Request-Body.
+         *
+         * Bei POST ist das genau das, was der Client gesendet hat.
+         */
         $rawBody = file_get_contents('php://input');
 
         if ($rawBody === false) {
@@ -76,6 +125,12 @@ final class App
         ], 201);
     }
 
+    /**
+     * Liest Logmeldungen.
+     *
+     * Der Client kann über ?limit=... steuern, wie viele Meldungen er haben
+     * möchte. Das Repository begrenzt den Wert zusätzlich auf maximal 1000.
+     */
     private function readLogs(): void
     {
         $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 100;
@@ -87,10 +142,17 @@ final class App
     }
 
     /**
+     * Sammelt die HTTP-Header des aktuellen Requests.
+     *
      * @return array<string, string>
      */
     private function headers(): array
     {
+        /*
+         * getallheaders() existiert nicht in jeder PHP-Laufzeitumgebung.
+         * Apache stellt es meist bereit, aber für Portabilität gibt es darunter
+         * einen Fallback über $_SERVER.
+         */
         if (function_exists('getallheaders')) {
             $headers = getallheaders();
 
@@ -106,6 +168,9 @@ final class App
                 continue;
             }
 
+            /*
+             * Aus HTTP_USER_AGENT wird User-Agent.
+             */
             $name = substr($key, 5);
             $name = str_replace('_', ' ', strtolower($name));
             $name = str_replace(' ', '-', ucwords($name));
@@ -117,6 +182,8 @@ final class App
     }
 
     /**
+     * Sendet eine JSON-Antwort.
+     *
      * @param array<string, mixed> $data
      */
     private function json(array $data, int $statusCode = 200): void

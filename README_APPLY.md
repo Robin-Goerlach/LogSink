@@ -1,39 +1,87 @@
-# LogSink Docs Update - Dienstag 2026-04-28
+# LogSink commented code V1
 
-Dieses Paket bereinigt und ergänzt die Dokumentation für den nächsten Arbeitsschritt.
+Dieses Paket enthält nur kommentierte Code-Dateien für den aktuellen V1-Stand.
 
-## Was wird geändert?
+## Ziel
 
-- `10-from-unprotected-to-secure.md` wird das kanonische Dokument für den Sicherheits-Lernpfad.
-- Das doppelte Dokument `13-from-unprotected-to-secure.md` soll entfernt werden.
-- Ein neues ausführliches Dokument beschreibt die aktuelle funktionierende V1, den Code und die erste Sicherungsmaßnahme mit `.env-logsink`.
-- Ein neues Dokument plant schreibende Logging-Clients, weil bisher vor allem der Java-Viewer betrachtet wurde.
-- `TODO.md`, `CHANGELOG.md`, `06-session-state.md`, `05-decision-log.md`, `README.md` und `database/mariadb/README.md` werden aktualisiert.
+Der Commit soll ein reiner Verständnis-Commit sein:
+
+- Kommentare ergänzen
+- Einstiegspunkte erklären
+- Datenfluss erklären
+- typische Stolperfallen markieren
+- keine neue Funktion einführen
+- keine API ändern
+- keine Datenbank ändern
+
+## Enthaltene Dateien
+
+```text
+services/log-sink/index.php
+services/log-sink/public/index.php
+services/log-sink/src/App.php
+services/log-sink/src/Bootstrap.php
+services/log-sink/src/Config.php
+services/log-sink/src/Database.php
+services/log-sink/src/LogRepository.php
+services/log-sink/src/ServiceLogger.php
+
+clients/java-log-viewer/src/main/java/de/sasd/logsink/viewer/Main.java
+clients/java-log-viewer/src/main/java/de/sasd/logsink/viewer/client/LogServiceClient.java
+clients/java-log-viewer/src/main/java/de/sasd/logsink/viewer/model/LogEntry.java
+clients/java-log-viewer/src/main/java/de/sasd/logsink/viewer/model/LogResponse.java
+clients/java-log-viewer/src/main/java/de/sasd/logsink/viewer/ui/LogDetailDialog.java
+clients/java-log-viewer/src/main/java/de/sasd/logsink/viewer/ui/LogTableModel.java
+clients/java-log-viewer/src/main/java/de/sasd/logsink/viewer/ui/LogViewerFrame.java
+clients/java-log-viewer/src/main/java/de/sasd/logsink/viewer/ui/SimpleDocumentListener.java
+```
 
 ## Einspielen
 
 Im Root des Repositories:
 
 ```bash
-unzip -o LogSink_docs_tuesday_start_2026-04-28.zip -d .
+git status
+git switch -c chore/comment-current-v1-code
 
-# Das doppelte Sicherheitsdokument entfernen.
-git rm docs/learning/13-from-unprotected-to-secure.md
+unzip -o LogSink_commented_code_v1.zip -d .
 
 git status
 git diff --stat
-
-git add CHANGELOG.md TODO.md database/mariadb/README.md docs/learning
-git commit -m "Update LogSink learning docs for Tuesday planning"
-git push origin main
+git diff
 ```
 
-## Danach prüfen
+## Prüfen
+
+PHP-Syntax prüfen:
 
 ```bash
-git status
-git log --oneline --decorate -5
-find docs/learning -maxdepth 1 -type f | sort
+php -l services/log-sink/index.php
+php -l services/log-sink/public/index.php
+php -l services/log-sink/src/App.php
+php -l services/log-sink/src/Bootstrap.php
+php -l services/log-sink/src/Config.php
+php -l services/log-sink/src/Database.php
+php -l services/log-sink/src/LogRepository.php
+php -l services/log-sink/src/ServiceLogger.php
 ```
 
-Erwartung: Es gibt nur noch `10-from-unprotected-to-secure.md`, nicht mehr zusätzlich `13-from-unprotected-to-secure.md`.
+Java bauen:
+
+```bash
+mvn -f clients/java-log-viewer/pom.xml clean package
+```
+
+Remote-Service prüfen:
+
+```bash
+curl -i "http://api.sasd.de/logsink/index.php?limit=5"
+```
+
+## Commit
+
+```bash
+git add services/log-sink clients/java-log-viewer/src
+git commit -m "Add explanatory comments to current V1 code"
+git push -u origin chore/comment-current-v1-code
+```

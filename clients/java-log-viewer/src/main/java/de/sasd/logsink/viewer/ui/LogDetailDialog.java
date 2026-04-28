@@ -12,9 +12,17 @@ import java.awt.Dimension;
 
 /**
  * Einfacher Detaildialog für eine Logmeldung.
+ *
+ * Die Tabelle zeigt nur eine gekürzte Vorschau. Dieser Dialog zeigt die
+ * vollständige Meldung und wichtige Metadaten.
  */
 public final class LogDetailDialog extends JDialog {
+
     public LogDetailDialog(JFrame owner, LogEntry entry) {
+        /*
+         * true bedeutet: modaler Dialog.
+         * Solange der Dialog offen ist, bleibt das Hauptfenster im Hintergrund.
+         */
         super(owner, "Logmeldung " + entry.id(), true);
 
         JTextArea textArea = new JTextArea(buildText(entry));
@@ -33,6 +41,12 @@ public final class LogDetailDialog extends JDialog {
         setLocationRelativeTo(owner);
     }
 
+    /**
+     * Baut den sichtbaren Detailtext.
+     *
+     * Das ist bewusst keine komplexe UI mit vielen Feldern. Für V1 ist ein
+     * lesbarer Textblock einfacher und ausreichend.
+     */
     private String buildText(LogEntry entry) {
         StringBuilder builder = new StringBuilder();
 
@@ -51,7 +65,6 @@ public final class LogDetailDialog extends JDialog {
         builder.append("User-Agent: ").append(nullToEmpty(entry.userAgent())).append("\n");
         builder.append("Größe: ").append(entry.rawMessageSize() == null ? "" : entry.rawMessageSize()).append("\n");
         builder.append("SHA-256: ").append(nullToEmpty(entry.payloadSha256())).append("\n");
-
         builder.append("\n");
         builder.append("--------------------------------------------------------------------------------\n");
         builder.append("Meldung\n");
