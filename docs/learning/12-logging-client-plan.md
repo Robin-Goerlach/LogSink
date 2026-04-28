@@ -32,7 +32,8 @@ examples/
 │   └── php/
 └── log-readers/
     ├── README.md
-    └── curl/
+    ├── curl/
+    └── php/
 ```
 
 ## Entwicklungsstufen
@@ -79,6 +80,24 @@ examples/log-senders/php/post-error-log.php
 examples/log-senders/php/roundtrip-smoke-test.php
 examples/log-senders/php/src/LogSinkClient.php
 ```
+
+### EX-005a: PHP-Reader-Beispiel ergänzen
+
+Status: erledigt mit V0-Beispiel.
+
+Enthalten:
+
+```text
+examples/log-readers/php/get-latest-logs.php
+```
+
+Das Skript nutzt vorerst die Client-Klasse aus:
+
+```text
+examples/log-senders/php/src/LogSinkClient.php
+```
+
+Später kann diese Klasse in einen gemeinsamen Beispielbereich verschoben werden.
 
 ### EX-006: Java-Logging-Client erstellen
 
