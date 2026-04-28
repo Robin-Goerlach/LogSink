@@ -8,8 +8,10 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 - [x] Remote-Service prüfen: `curl -i "http://api.sasd.de/logsink/index.php?limit=5"`.
 - [x] Roundtrip-Smoke-Test ausführen.
 - [x] Java-Viewer starten und prüfen, ob gesendete Meldungen sichtbar sind.
-- [ ] PHP-Logging-Client einspielen.
-- [ ] PHP-Roundtrip-Smoke-Test ausführen.
+- [x] PHP-Logging-Client einspielen.
+- [x] PHP-Roundtrip-Smoke-Test ausführen.
+- [ ] PHP-Reader-Beispiel einspielen.
+- [ ] PHP-Reader testen.
 - [ ] Java-Viewer prüfen, ob PHP-Meldungen sichtbar sind.
 - [ ] API-Vertrag historisieren: aktueller `index.php`-Betrieb vs. spätere `/api`-/`route`-API.
 
@@ -20,6 +22,7 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 - [x] EX-003: curl-Reader zur Verifikation erstellen.
 - [x] EX-004: Roundtrip-Smoke-Test erstellen.
 - [x] EX-005: PHP-Logging-Client erstellen.
+- [x] EX-005a: PHP-Reader-Beispiel ergänzen.
 - [ ] EX-006: Java-Logging-Client erstellen.
 - [ ] EX-007: Sender-Clients später an Authentifizierung anpassen.
 

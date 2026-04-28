@@ -12,6 +12,7 @@ Das Format orientiert sich lose an Keep a Changelog, ohne bereits eine formale R
 - curl-Reader-Beispiel unter `examples/log-readers/curl` zur schnellen Verifikation.
 - Roundtrip-Smoke-Test für den aktuellen V0/V1-Flow: Sender -> Service -> Datenbank -> GET-API.
 - PHP-Logging-Client unter `examples/log-senders/php`.
+- PHP-Reader-Beispiel unter `examples/log-readers/php`.
 - PHP-Roundtrip-Smoke-Test für den aktuellen V0/V1-Flow.
 - Wiederverwendbare kleine PHP-Klasse `LogSinkClient` ohne Composer-Abhängigkeit.
 - Beispiel-Dokumentation unter `examples/`.
@@ -19,7 +20,7 @@ Das Format orientiert sich lose an Keep a Changelog, ohne bereits eine formale R
 
 ### Changed
 
-- `docs/learning/12-logging-client-plan.md` verwendet jetzt EX-Nummern statt kollidierender LS-Nummern und dokumentiert den PHP-Sender.
+- `docs/learning/12-logging-client-plan.md` verwendet jetzt EX-Nummern statt kollidierender LS-Nummern und dokumentiert PHP-Sender sowie PHP-Reader.
 - `TODO.md` unterscheidet zwischen LS-Schritten für den Service und EX-Schritten für Beispiele.
 
 ### Security
