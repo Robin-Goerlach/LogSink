@@ -1,6 +1,14 @@
 # Maven
 /target/
 
+# Local runtime configuration
+#
+# client-settings.json may contain local service URLs and later tokens.
+# Therefore it should not be committed. Keep client-settings.example.json
+# as the documented template.
+client-settings.json
+client-settings.local.json
+
 # IDEs
 /.idea/
 /.vscode/

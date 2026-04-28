@@ -1,7 +1,9 @@
 package de.sasd.logsink.viewer;
 
+import de.sasd.logsink.viewer.config.ClientSettingsLoader;
 import de.sasd.logsink.viewer.ui.LogViewerFrame;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -10,6 +12,7 @@ import javax.swing.UIManager;
  *
  * Diese Klasse ist bewusst klein:
  *
+ * - Konfiguration laden
  * - Look-and-Feel setzen
  * - Hauptfenster erzeugen
  * - Hauptfenster anzeigen
@@ -30,6 +33,14 @@ public final class Main {
 
     public static void main(String[] args) {
         /*
+         * Die Konfiguration wird vor dem Start der Oberfläche geladen.
+         *
+         * Dadurch kann LogViewerFrame sofort mit der richtigen Service-URL,
+         * dem voreingestellten Limit und dem HTTP-Timeout erzeugt werden.
+         */
+        ClientSettingsLoader.LoadResult loadResult = ClientSettingsLoader.loadDefault();
+
+        /*
          * Swing-Regel:
          * ------------
          * Änderungen an Swing-Oberflächen sollen auf dem Event Dispatch Thread
@@ -38,7 +49,20 @@ public final class Main {
         SwingUtilities.invokeLater(() -> {
             setSystemLookAndFeel();
 
-            LogViewerFrame frame = new LogViewerFrame();
+            if (loadResult.warning() != null && !loadResult.warning().isBlank()) {
+                JOptionPane.showMessageDialog(
+                    null,
+                    loadResult.warning(),
+                    "LogSink Viewer Konfiguration",
+                    JOptionPane.WARNING_MESSAGE
+                );
+            }
+
+            LogViewerFrame frame = new LogViewerFrame(
+                loadResult.settings(),
+                loadResult.sourceDescription()
+            );
+
             frame.setVisible(true);
         });
     }

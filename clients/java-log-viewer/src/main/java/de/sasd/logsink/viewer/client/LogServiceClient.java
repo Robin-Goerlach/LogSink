@@ -2,6 +2,7 @@ package de.sasd.logsink.viewer.client;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.sasd.logsink.viewer.config.ClientSettings;
 import de.sasd.logsink.viewer.model.LogEntry;
 import de.sasd.logsink.viewer.model.LogResponse;
 
@@ -42,16 +43,25 @@ public final class LogServiceClient {
 
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
+    private final Duration requestTimeout;
 
     public LogServiceClient() {
+        this(ClientSettings.DEFAULT_TIMEOUT_SECONDS);
+    }
+
+    public LogServiceClient(int timeoutSeconds) {
+        int safeTimeoutSeconds = Math.max(1, Math.min(120, timeoutSeconds));
+
+        this.requestTimeout = Duration.ofSeconds(safeTimeoutSeconds);
+
         /*
          * Java HttpClient ist seit Java 11 Teil der Standardbibliothek.
          *
-         * connectTimeout begrenzt nur den Verbindungsaufbau. Der eigentliche
-         * Request bekommt weiter unten zusätzlich ein Timeout.
+         * connectTimeout begrenzt den Verbindungsaufbau. Der eigentliche Request
+         * bekommt zusätzlich weiter unten ein Timeout.
          */
         this.httpClient = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(5))
+            .connectTimeout(this.requestTimeout)
             .build();
 
         /*
@@ -76,7 +86,7 @@ public final class LogServiceClient {
 
         HttpRequest request = HttpRequest.newBuilder()
             .uri(uri)
-            .timeout(Duration.ofSeconds(15))
+            .timeout(requestTimeout)
             .header("Accept", "application/json")
             .GET()
             .build();
@@ -123,7 +133,7 @@ public final class LogServiceClient {
         String trimmedUrl = baseUrl == null ? "" : baseUrl.trim();
 
         if (trimmedUrl.isEmpty()) {
-            trimmedUrl = "http://127.0.0.1:8080/api/logs";
+            trimmedUrl = ClientSettings.DEFAULT_SERVICE_URL;
         }
 
         /*
