@@ -2,31 +2,43 @@
 
 Alle nennenswerten Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
 
-Das Format orientiert sich lose an Keep a Changelog, ohne bereits eine formale Release-Policy vorauszusetzen.
+Das Format orientiert sich lose an Keep a Changelog. Eine formale Release-Policy gibt es noch nicht.
 
 ## [Unreleased]
 
 ### Added
 
-- Erste curl-Beispiele für schreibende Log-Clients unter `examples/log-senders/curl`.
-- curl-Reader-Beispiel unter `examples/log-readers/curl` zur schnellen Verifikation.
-- Roundtrip-Smoke-Test für den aktuellen V0/V1-Flow: Sender -> Service -> Datenbank -> GET-API.
+- Ausführliches Dokument `docs/learning/11-v1-code-walkthrough-and-first-hardening.md` zur aktuellen funktionierenden V1, SQL, PHP-Service, Java-Viewer und erster Sicherungsmaßnahme.
+- Plan `docs/learning/12-logging-client-plan.md` für schreibende Logging-Clients, Reader-Beispiele und Roundtrip-Tests.
+- Erste curl-Beispiele unter `examples/log-senders/curl`.
+- curl-Reader unter `examples/log-readers/curl`.
 - PHP-Logging-Client unter `examples/log-senders/php`.
-- PHP-Reader-Beispiel unter `examples/log-readers/php`.
-- PHP-Roundtrip-Smoke-Test für den aktuellen V0/V1-Flow.
-- Wiederverwendbare kleine PHP-Klasse `LogSinkClient` ohne Composer-Abhängigkeit.
-- Beispiel-Dokumentation unter `examples/`.
-- Eigene EX-Nummerierung für Beispiele, damit keine Konflikte mit LS-Schritten aus dem Haupt-Lehrplan entstehen.
+- PHP-Reader unter `examples/log-readers/php`.
+- Java-Logging-Client unter `examples/log-senders/java`.
+- C#/.NET-Beispielprojekt unter `examples/csharp` mit Sender-, Reader- und Roundtrip-Befehlen.
+- Roundtrip-Smoke-Tests für curl, PHP, Java und C#.
+- MariaDB-README mit Erklärung der SQL-Dateien, Trigger, View und lokaler/IONOS-Nutzung.
+- Eigene EX-Nummerierung für Beispiel-Clients, damit keine Konflikte mit LS-Schritten aus dem Hauptlehrplan entstehen.
 
 ### Changed
 
-- `docs/learning/12-logging-client-plan.md` verwendet jetzt EX-Nummern statt kollidierender LS-Nummern und dokumentiert PHP-Sender sowie PHP-Reader.
-- `TODO.md` unterscheidet zwischen LS-Schritten für den Service und EX-Schritten für Beispiele.
+- `10-from-unprotected-to-secure.md` ist das kanonische Sicherheits-Lerndokument.
+- `13-from-unprotected-to-secure.md` wurde entfernt, um doppelte Dokumentation zu vermeiden.
+- `docs/learning/README.md` wurde an die bereinigte Dokumentstruktur angepasst.
+- `docs/learning/06-session-state.md` wurde auf den aktuellen Arbeitsstand aktualisiert.
+- `docs/learning/99-open-questions.md` wurde um Fragen zu schreibenden Logging-Clients ergänzt.
+- `docs/learning/05-decision-log.md` wurde um Entscheidungen zu Dokumentbereinigung und Logging-Clients ergänzt.
+- `docs/learning/12-logging-client-plan.md` beschreibt jetzt curl, PHP, Java und C# sowie die Rolle der Reader- und Roundtrip-Beispiele.
+- `contracts/http-api/logs-v1.md` beschreibt nun den realen aktuellen V0/V1-Betrieb über `index.php` und grenzt ihn von der geplanten Ziel-API ab.
+- Der Java-Viewer nutzt eine Konfigurationsdatei statt einer hart codierten Service-URL.
+- Die bestehenden PHP- und Java-Dateien wurden ausführlicher kommentiert, damit der Code als Lernmaterial besser lesbar ist.
 
 ### Security
 
-- Die curl- und PHP-Beispiele nutzen noch die bewusst ungeschützte V0/V1-API.
-- Spätere EX-Schritte müssen Bearer-Token und Source-Scopes ergänzen.
+- Der funktionierende IONOS-Stand wird als erster abgesicherter Zwischenstand dokumentiert: Die HTTP-API ist weiterhin ungeschützt, aber die echte Konfigurationsdatei liegt nicht mehr im öffentlich erreichbaren Service-Verzeichnis.
+- `.env` und `.env-logsink` dürfen nicht aus dem Browser abrufbar sein.
+- Die Beispiel-Clients nutzen bewusst noch die ungeschützte V0/V1-API. Spätere Schritte müssen Bearer-Token, Source-Principal und Scopes ergänzen.
+- Demo-Logmeldungen dürfen langfristig keine sensiblen lokalen Dateipfade, Zugangsdaten oder Tokens enthalten.
 
 ## [0.1.0] - 2026-04-25
 
