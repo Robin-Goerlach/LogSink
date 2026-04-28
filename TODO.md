@@ -10,9 +10,9 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 - [x] Java-Viewer starten und prüfen, ob gesendete Meldungen sichtbar sind.
 - [x] PHP-Logging-Client einspielen.
 - [x] PHP-Roundtrip-Smoke-Test ausführen.
-- [ ] PHP-Reader-Beispiel einspielen.
-- [ ] PHP-Reader testen.
-- [ ] Java-Viewer prüfen, ob PHP-Meldungen sichtbar sind.
+- [X] PHP-Reader-Beispiel einspielen.
+- [X] PHP-Reader testen.
+- [X] Java-Viewer prüfen, ob PHP-Meldungen sichtbar sind.
 - [ ] API-Vertrag historisieren: aktueller `index.php`-Betrieb vs. spätere `/api`-/`route`-API.
 
 ## Examples
@@ -23,7 +23,7 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 - [x] EX-004: Roundtrip-Smoke-Test erstellen.
 - [x] EX-005: PHP-Logging-Client erstellen.
 - [x] EX-005a: PHP-Reader-Beispiel ergänzen.
-- [ ] EX-006: Java-Logging-Client erstellen.
+- [X] EX-006: Java-Logging-Client erstellen.
 - [ ] EX-007: Sender-Clients später an Authentifizierung anpassen.
 
 ## Service
