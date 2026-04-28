@@ -23,7 +23,9 @@ Der Ordner `docs/learning` ist das Projektgedächtnis. Er beantwortet nicht nur,
 | `07-beginner-guide.md` | praktische Erklärungen für Neulinge: Maven, Composer, curl, PHPUnit, phpDocumentor, Deployment |
 | `08-test-and-quality-plan.md` | Teststrategie, curl-Tests, PHPUnit, Java-Client-Prüfung |
 | `09-risk-register.md` | Risiken, Inkonsistenzen und technische Schulden |
-| `13-from-unprotected-to-secure.md` | Sicherheits-Lernpfad von der offenen V1 zur geschützten API |
+| `10-from-unprotected-to-secure.md` | Sicherheits-Lernpfad von der offenen V1 zur geschützten API |
+| `11-v1-code-walkthrough-and-first-hardening.md` | ausführliche Erklärung der aktuellen V1, des Codes und der ersten Sicherungsmaßnahme |
+| `12-logging-client-plan.md` | Plan für schreibende Logging-Clients und deren Tests |
 | `14-ionos-deployment-notes.md` | praktische IONOS-Deployment-Erkenntnisse für die aktuelle V1 |
 | `15-java-client-configuration-plan.md` | Plan zur Ablösung der hart codierten Java-Service-URL durch Konfiguration |
 | `16-code-commenting-plan.md` | Plan für erklärende Kommentare in Service- und Client-Code |

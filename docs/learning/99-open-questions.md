@@ -4,8 +4,17 @@
 
 1. Soll `/api/logs` langfristig erhalten bleiben?
 2. Soll die Ziel-API in `logs-v1.md` oder neuer Datei `logs-v1.1.md` dokumentiert werden?
-3. Wann wird der Java-Client endgültig auf `/api/v1/...` umgestellt?
-4. Soll der Service zeitweise beide Response-Modelle liefern können?
+3. Wann wird der Java-Viewer endgültig auf `/api/v1/...` umgestellt?
+4. Soll der Service zeitweise Legacy- und Ziel-Response-Modelle liefern können?
+
+## Schreibende Logging-Clients
+
+1. Sollen schreibende Beispiel-Clients unter `examples/` oder unter `clients/` liegen?
+2. Welche Sender bauen wir zuerst: curl, PHP oder Java?
+3. Soll der Java-Viewer später selbst Test-Logs senden können oder bleibt das getrennten Sendern vorbehalten?
+4. Welche Sprache ist für den ersten echten Sender am didaktisch sinnvollsten?
+5. Wie testen wir später automatisch: Sender -> Service -> DB -> Viewer/API?
+6. Soll es später ein kleines gemeinsames JSON-Event-Beispiel geben, das alle Sender verwenden?
 
 ## Datenbank
 
@@ -27,12 +36,9 @@
 
 ## Client
 
-1. Soll der Java-Client Test-Logs senden können oder zunächst nur lesen?
-2. Soll der Java-Client später Saved Views speichern?
-3. Wird ein WPF-Client im selben Repository ergänzt?
-4. Soll der Java-Client automatische Refreshes unterstützen?
-5. Welche Exportfelder sind für CSV/JSON verbindlich?
-6. Soll der Java-Client kurzfristig Legacy-API und Ziel-API parallel unterstützen?
+1. Soll der Java-Client automatische Refreshes unterstützen?
+2. Welche Exportfelder sind für CSV/JSON verbindlich?
+3. Soll der Java-Client kurzfristig Legacy-API und Ziel-API parallel unterstützen?
 
 ## Betrieb
 

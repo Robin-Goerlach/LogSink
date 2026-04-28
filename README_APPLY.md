@@ -1,34 +1,39 @@
-# LogSink Docs Cleanup 2026-04-27
+# LogSink Docs Update - Dienstag 2026-04-28
 
-Dieses Paket aktualisiert die Dokumentation nach dem Montagmorgen-Deployment-Test.
+Dieses Paket bereinigt und ergänzt die Dokumentation für den nächsten Arbeitsschritt.
 
-## Enthaltene Änderungen
+## Was wird geändert?
 
-- `docs/learning/README.md` neu formatiert und vollständig indexiert.
-- `docs/learning/06-session-state.md` auf den aktuellen Stand gebracht.
-- `docs/learning/03a-learning-plan-addendum-2026-04-27.md` bereinigt.
-- `docs/learning/05-decision-log.md` um IONOS-/Konfigurationsentscheidungen ergänzt.
-- `docs/learning/13-from-unprotected-to-secure.md` konsolidiert.
-- `docs/learning/14-ionos-deployment-notes.md` aktualisiert.
-- `docs/learning/15-java-client-configuration-plan.md` neu ergänzt.
-- `docs/learning/16-code-commenting-plan.md` neu ergänzt.
-- `docs/learning/99-open-questions.md` aktualisiert.
-- `database/mariadb/README.md` ergänzt.
-- `services/log-sink/README.md` aktualisiert.
-- `CHANGELOG.md` ausführlicher für den 2026-04-27-Stand formuliert.
-- `TODO.md` bereinigt und neu priorisiert.
+- `10-from-unprotected-to-secure.md` wird das kanonische Dokument für den Sicherheits-Lernpfad.
+- Das doppelte Dokument `13-from-unprotected-to-secure.md` soll entfernt werden.
+- Ein neues ausführliches Dokument beschreibt die aktuelle funktionierende V1, den Code und die erste Sicherungsmaßnahme mit `.env-logsink`.
+- Ein neues Dokument plant schreibende Logging-Clients, weil bisher vor allem der Java-Viewer betrachtet wurde.
+- `TODO.md`, `CHANGELOG.md`, `06-session-state.md`, `05-decision-log.md`, `README.md` und `database/mariadb/README.md` werden aktualisiert.
 
 ## Einspielen
 
 Im Root des Repositories:
 
 ```bash
-unzip -o LogSink_docs_cleanup_2026-04-27.zip -d .
+unzip -o LogSink_docs_tuesday_start_2026-04-28.zip -d .
+
+# Das doppelte Sicherheitsdokument entfernen.
+git rm docs/learning/13-from-unprotected-to-secure.md
+
 git status
 git diff --stat
-git add CHANGELOG.md TODO.md docs/learning database/mariadb/README.md services/log-sink/README.md
-git commit -m "Update LogSink documentation after IONOS deployment test"
+
+git add CHANGELOG.md TODO.md database/mariadb/README.md docs/learning
+git commit -m "Update LogSink learning docs for Tuesday planning"
 git push origin main
 ```
 
-Dieses Paket enthält bewusst keine Codeänderungen.
+## Danach prüfen
+
+```bash
+git status
+git log --oneline --decorate -5
+find docs/learning -maxdepth 1 -type f | sort
+```
+
+Erwartung: Es gibt nur noch `10-from-unprotected-to-secure.md`, nicht mehr zusätzlich `13-from-unprotected-to-secure.md`.

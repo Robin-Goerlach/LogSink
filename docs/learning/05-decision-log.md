@@ -18,7 +18,7 @@ Das Projekt ist ein Lehrprojekt. Datenbank, Service und Client sollen gemeinsam 
 
 - PHP-Service liegt unter `services/log-sink`.
 - Java-Client liegt unter `clients/java-log-viewer`.
-- spätere Clients können unter `clients/` ergänzt werden.
+- spätere Clients können unter `clients/` oder als Beispiele unter `examples/` ergänzt werden.
 - spätere Services können unter `services/` ergänzt werden.
 
 ---
@@ -71,8 +71,8 @@ Das Zielsystem soll ohne `.htaccess`, ohne URL-Rewriting, ohne Docker-Pflicht un
 
 Es gibt getrennte Principal-Typen:
 
-- `source` für Ingest
-- `client` für Read
+- `source` für Ingest,
+- `client` für Read.
 
 ### Grund
 
@@ -81,8 +81,9 @@ Ein Leser darf nicht automatisch schreiben. Eine Logquelle darf nicht automatisc
 ### Konsequenzen
 
 - mindestens zwei Token-Arten.
-- Java-Client braucht `readToken` und optional `ingestToken`.
-- Test-Log-Versand darf deaktivierbar sein, wenn kein Source-Token vorhanden ist.
+- Java-Viewer braucht `readToken`.
+- schreibende Beispiel-Clients brauchen `ingestToken`.
+- Test-Log-Versand im Viewer darf nur mit bewusst konfiguriertem Source-/Ingest-Token erfolgen.
 
 ---
 
@@ -125,7 +126,7 @@ Der aktuelle Service läuft ohne Composer. Vor Tooling sollen aktueller Start, c
 
 ---
 
-## ADR-007: IONOS-Konfiguration liegt außerhalb des Service-Verzeichnisses
+## ADR-007: Produktive/testweise IONOS-Konfiguration liegt außerhalb des Service-Verzeichnisses
 
 **Status:** Accepted
 
@@ -162,3 +163,46 @@ Das Skript ist für temporäre Fehlersuche nützlich, gibt aber technische Betri
 - Nur temporär auf den Server kopieren.
 - Nach Diagnose sofort löschen.
 - Server mit curl auf 404 prüfen.
+
+---
+
+## ADR-009: `10-from-unprotected-to-secure.md` ist das kanonische Sicherheits-Lerndokument
+
+**Status:** Accepted
+
+### Entscheidung
+
+Das doppelte Dokument `13-from-unprotected-to-secure.md` wird entfernt. Der Sicherheits-Lernpfad liegt unter:
+
+```text
+docs/learning/10-from-unprotected-to-secure.md
+```
+
+### Grund
+
+Zwei gleichnamige Dokumente mit unterschiedlicher Nummerierung verwirren und führen zu Pflegeaufwand.
+
+### Konsequenzen
+
+- README verweist nur noch auf `10-from-unprotected-to-secure.md`.
+- neue Sicherheitsabschnitte werden dort ergänzt.
+
+---
+
+## ADR-010: Schreibende Logging-Clients werden als eigener Lern- und Testbereich geplant
+
+**Status:** Accepted
+
+### Entscheidung
+
+Neben dem Java-Viewer werden schreibende Beispiel-Clients geplant.
+
+### Grund
+
+Ein Logging-Service wird nicht nur gelesen, sondern vor allem von anderen Programmen beschrieben. Sender-Clients sind gleichzeitig Dokumentation und Testwerkzeug.
+
+### Konsequenzen
+
+- neue LS-Schritte LS-021 bis LS-026.
+- mögliche Struktur unter `examples/`.
+- Tests prüfen später den Gesamtfluss: Sender -> Service -> DB -> Viewer.

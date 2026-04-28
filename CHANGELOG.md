@@ -8,30 +8,24 @@ Das Format orientiert sich lose an Keep a Changelog, ohne bereits eine formale R
 
 ### Added
 
-- Learning-Dokumentation für den Montagmorgen-Stand am 2026-04-27.
-- IONOS-Deployment-Notizen für den aktuell laufenden V1-Service.
-- Ergänzende LS-Schritte für Maven-Build aus dem Monorepo-Root, curl-Diagnose, IONOS-Dateistruktur, externe `.env-logsink`, SQL-Splitting, Java-Client-Konfiguration und Code-Kommentierung.
-- Dokument `docs/learning/13-from-unprotected-to-secure.md` als Sicherheits-Lernpfad von der offenen V1 zur geschützten API.
-- Dokument `docs/learning/15-java-client-configuration-plan.md` zur geplanten Ablösung der hart codierten Java-Service-URL.
-- Dokument `docs/learning/16-code-commenting-plan.md` als Plan für erklärende Kommentare im Service- und Client-Code.
-- `database/mariadb/README.md` zur Nutzung der SQL-Skripte lokal und bei IONOS.
-- IONOS-Minimaldeployment wurde dokumentiert: PHP 8.4.20, PDO MySQL, externe `.env-logsink`, erreichbarer V1-Endpunkt und erfolgreiche DB-Verbindung.
+- Ausführliches Dokument `docs/learning/11-v1-code-walkthrough-and-first-hardening.md` zur aktuellen funktionierenden V1, SQL, PHP-Service, Java-Viewer und erster Sicherungsmaßnahme.
+- Plan `docs/learning/12-logging-client-plan.md` für schreibende Logging-Clients und deren Tests.
+- Ergänzung im Sicherheits-Lernpfad, dass die erste Sicherungsmaßnahme die Verlagerung der echten `.env` aus der Browser-Reichweite war.
+- MariaDB-README mit Erklärung der SQL-Dateien, Trigger, View und lokaler/IONOS-Nutzung.
 
 ### Changed
 
-- Service-Konfiguration kann über externe `.env-logsink` außerhalb des Service-Verzeichnisses geladen werden.
-- MariaDB-Skript wurde in lokale Datenbankerzeugung, Schema für bestehende Datenbank und Demo-Daten getrennt.
-- Temporäres PHP-Diagnose-Skript wurde aus dem Service-Kontext in `tools/diagnostics` verschoben.
-- `docs/learning/README.md` wurde als vollständiger Index für alle Learning-Dokumente aktualisiert.
-- `services/log-sink/README.md` wurde um IONOS-Testbetrieb, externe Konfiguration und Diagnosehinweise ergänzt.
-- `TODO.md` wurde neu priorisiert.
+- `10-from-unprotected-to-secure.md` ist das kanonische Sicherheits-Lerndokument.
+- `13-from-unprotected-to-secure.md` wird entfernt, um die doppelte Dokumentation zu vermeiden.
+- `docs/learning/README.md` wurde an die bereinigte Dokumentstruktur angepasst.
+- `docs/learning/06-session-state.md` wurde auf Dienstagmorgen aktualisiert.
+- `docs/learning/99-open-questions.md` wurde um Fragen zu schreibenden Logging-Clients ergänzt.
+- `docs/learning/05-decision-log.md` wurde um Entscheidungen zu Dokumentbereinigung und Logging-Clients ergänzt.
+- `TODO.md` wurde auf die nächsten Schritte Dokumentation, Code-Kommentierung, Client-Konfiguration und Sender-Clients ausgerichtet.
 
 ### Security
 
-- Öffentlich erreichbare `.env` im IONOS-Service-Verzeichnis wurde entfernt.
-- Webchecks für `.env`, `_.env` und `.env-logsink` wurden dokumentiert.
-- Diagnose-Skript darf nicht dauerhaft auf dem Server liegen.
-- Die V1 bleibt weiterhin ungeschützt; geschützt wurde bisher vor allem die Konfigurationsablage, nicht die HTTP-API selbst.
+- Der funktionierende IONOS-Stand wird als erster abgesicherter Zwischenstand dokumentiert: Die HTTP-API ist weiterhin ungeschützt, aber die echte Konfigurationsdatei liegt nicht mehr im öffentlich erreichbaren Service-Verzeichnis.
 
 ## [0.1.0] - 2026-04-25
 
