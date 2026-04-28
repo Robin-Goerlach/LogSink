@@ -13,16 +13,7 @@ Diese Clients sind aus zwei Gründen wichtig:
 
 ## Nummerierung
 
-Die LS-Nummern `LS-021` bis `LS-024` sind im Haupt-Lehrplan bereits für API-Umbauten belegt:
-
-```text
-LS-021: Request-ID einführen
-LS-022: Einheitliches JSON-Antwortmodell einführen
-LS-023: Einfaches Routing einführen
-LS-024: Front-Controller-Route-Parameter ergänzen
-```
-
-Deshalb verwenden die Beispiel-Clients eine eigene Nummerierung:
+Die LS-Nummern `LS-021` bis `LS-024` sind im Haupt-Lehrplan bereits für API-Umbauten belegt. Deshalb verwenden die Beispiel-Clients eine eigene Nummerierung:
 
 ```text
 EX-001, EX-002, EX-003, ...
@@ -37,112 +28,65 @@ examples/
 ├── README.md
 ├── log-senders/
 │   ├── README.md
-│   └── curl/
+│   ├── curl/
+│   └── php/
 └── log-readers/
     ├── README.md
     └── curl/
 ```
 
-## Warum auch `examples/log-readers/`?
-
-Der Java-Viewer ist der eigentliche grafische Reader.
-
-Trotzdem sind kleine curl-Reader nützlich, weil man damit schnell prüfen kann:
-
-- Ist der Service erreichbar?
-- Kommt JSON zurück?
-- Ist eine frisch gesendete Meldung sichtbar?
-- Funktioniert ein Roundtrip ohne GUI?
-
-Die Reader-Beispiele sind also vor allem Diagnose- und Testwerkzeuge.
-
 ## Entwicklungsstufen
 
-Die Sender-Clients wachsen mit dem Service.
-
-### V0: ungeschütztes POST
-
-Der Client sendet einfach einen Body an den aktuellen V1-Service.
-
-Aktueller IONOS-Testbetrieb:
-
-```bash
-curl -i -X POST "http://api.sasd.de/logsink/index.php" \
-  -H "Content-Type: application/json; charset=utf-8" \
-  --data-binary '{"level":"INFO","service":"curl-example","message":"Hello from curl"}'
-```
-
-### V1: strukturierter JSON-Body
-
-Sobald der Service strukturierte Events erwartet, senden Clients ein definiertes Eventformat.
-
-### V2: Bearer-Token
-
-Clients senden:
-
-```http
-Authorization: Bearer <token>
-```
-
-### V3: Source-Principal
-
-Schreibende Clients verwenden einen Source-Token, keinen Client-/Read-Token.
-
-### V4: Scope `events.ingest`
-
-Der Token benötigt den Scope:
+Die Sender-Clients wachsen mit dem Service:
 
 ```text
-events.ingest
+V0 ungeschütztes POST
+V1 strukturierter JSON-Body
+V2 Bearer-Token
+V3 Source-Principal
+V4 Scope events.ingest
+V5 robuste Fehlerbehandlung
 ```
-
-### V5: robuste Fehlerbehandlung
-
-Clients behandeln:
-
-- 400 ungültiger Request,
-- 401 kein oder falscher Token,
-- 403 keine Berechtigung,
-- 413 Payload zu groß,
-- 415 falscher Content-Type,
-- 422 fachlich ungültiger Body,
-- 429 Rate-Limit,
-- 500 Serverfehler.
 
 ## Beispiel-Schritte
 
 ### EX-001: Struktur für Beispiele
 
-Ziel:
-
-```text
-examples/log-senders
-examples/log-readers
-```
+Status: erledigt.
 
 ### EX-002: curl-Logging-Beispiele erstellen
 
-Erste Skripte für ungeschütztes POST.
+Status: erledigt.
 
 ### EX-003: curl-Reader zur Verifikation erstellen
 
-GET-Beispiel, um die letzten Meldungen zu lesen.
+Status: erledigt.
 
 ### EX-004: Roundtrip-Smoke-Test erstellen
 
-Eine Meldung senden und danach prüfen, ob sie über GET sichtbar ist.
+Status: erledigt.
 
 ### EX-005: PHP-Logging-Client erstellen
 
-Einfacher PHP-Sender.
+Status: erledigt mit V0-Beispielen.
+
+Enthalten:
+
+```text
+examples/log-senders/php/post-json-log.php
+examples/log-senders/php/post-text-log.php
+examples/log-senders/php/post-error-log.php
+examples/log-senders/php/roundtrip-smoke-test.php
+examples/log-senders/php/src/LogSinkClient.php
+```
 
 ### EX-006: Java-Logging-Client erstellen
 
-Einfacher Java-Sender.
+Status: offen.
 
 ### EX-007: Sender-Clients an Authentifizierung anpassen
 
-Sobald Bearer-Tokens eingeführt werden, werden die Sender angepasst.
+Status: offen.
 
 ## Teststrategie
 
@@ -150,7 +94,7 @@ Sobald Bearer-Tokens eingeführt werden, werden die Sender angepasst.
 
 1. Sender sendet Testmeldung.
 2. Service antwortet erfolgreich.
-3. curl GET liest die letzten Logs.
+3. Reader liest die letzten Logs.
 4. Java-Viewer zeigt die neue Meldung.
 
 ### Negativtests
@@ -162,7 +106,3 @@ Sobald Bearer-Tokens eingeführt werden, werden die Sender angepasst.
 - später: fehlender Token,
 - später: falscher Token,
 - später: Token ohne Scope.
-
-## Wichtig
-
-Die Sender-Clients sind nicht nur Zusatzkomfort. Sie sind notwendig, damit wir später prüfen können, ob die Schreibseite des Logging-Services wirklich funktioniert.
