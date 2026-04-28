@@ -200,7 +200,7 @@ Die aktuelle V0/V1 ist weiterhin ungeschützt. Die Beispiele sind deshalb nur f�
 Spätere Client-Versionen müssen mindestens unterstützen:
 
 ```text
-Authorization: Bearer <token>
+Authorization: Bearer [token]
 Source-Principal
 Scope events.ingest
 Timeouts

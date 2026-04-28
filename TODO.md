@@ -2,7 +2,7 @@
 
 Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Faden stehen in `docs/learning/`.
 
-## Sofort / Dienstag
+## Abgeschlossen / Dienstag 2026-04-28
 
 - [x] curl-Logbeispiele einspielen.
 - [x] Remote-Service prüfen: `curl -i "http://api.sasd.de/logsink/index.php?limit=5"`.
@@ -10,10 +10,13 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 - [x] Java-Viewer starten und prüfen, ob gesendete Meldungen sichtbar sind.
 - [x] PHP-Logging-Client einspielen.
 - [x] PHP-Roundtrip-Smoke-Test ausführen.
-- [X] PHP-Reader-Beispiel einspielen.
-- [X] PHP-Reader testen.
-- [X] Java-Viewer prüfen, ob PHP-Meldungen sichtbar sind.
-- [ ] API-Vertrag historisieren: aktueller `index.php`-Betrieb vs. spätere `/api`-/`route`-API.
+- [x] PHP-Reader-Beispiel einspielen.
+- [x] PHP-Reader testen.
+- [x] Java-Viewer prüfen, ob PHP-Meldungen sichtbar sind.
+- [x] API-Vertrag historisieren: aktueller `index.php`-Betrieb vs. spätere `/api`-/`route`-API.
+- [x] Java-Logging-Client erstellen und Roundtrip testen.
+- [x] C#-Logging-/Reader-Beispiel erstellen und Roundtrip testen.
+- [x] Client-Beispielrunde dokumentieren.
 
 ## Examples
 
@@ -23,8 +26,9 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 - [x] EX-004: Roundtrip-Smoke-Test erstellen.
 - [x] EX-005: PHP-Logging-Client erstellen.
 - [x] EX-005a: PHP-Reader-Beispiel ergänzen.
-- [X] EX-006: Java-Logging-Client erstellen.
-- [ ] EX-007: Sender-Clients später an Authentifizierung anpassen.
+- [x] EX-006: Java-Logging-Client erstellen.
+- [x] EX-007: C#-Beispiele erstellen.
+- [ ] EX-008: Sender-Clients später an Authentifizierung anpassen.
 
 ## Service
 
@@ -61,6 +65,9 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 
 ## Dokumentation
 
-- [ ] `contracts/http-api/logs-v1.md` an aktuellen V0/V1-Betrieb anpassen.
+- [x] `contracts/http-api/logs-v1.md` an aktuellen V0/V1-Betrieb anpassen.
+- [x] `docs/learning/12-logging-client-plan.md` nach curl/PHP/Java/C# aktualisieren.
+- [x] `README_LEARNING_DOCS.md` nach Client-Beispielrunde aktualisieren.
+- [x] `docs/learning/06-session-state.md` nach Client-Beispielrunde aktualisieren.
 - [ ] `docs/learning/10-git-workflows.md` erstellen.
 - [ ] phpDocumentor-Kapitel ergänzen, sobald Composer eingeführt ist.

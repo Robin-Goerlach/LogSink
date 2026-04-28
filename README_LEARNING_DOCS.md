@@ -14,7 +14,7 @@ http://api.sasd.de/logsink/index.php
 
 Der Service kann Logmeldungen schreiben und lesen. Die echte Konfiguration wurde aus der Browser-Reichweite verschoben. Die HTTP-API ist aber weiterhin ungeschützt und wird erst in späteren LS-Schritten abgesichert.
 
-Es existieren inzwischen Beispiel-Clients für:
+Die Client-Beispielrunde für den ungeschützten V0/V1-Stand ist abgeschlossen. Es existieren Beispiele für:
 
 ```text
 curl
@@ -27,6 +27,16 @@ Diese Beispiele testen den kompletten Flow:
 
 ```text
 Sender -> HTTP POST -> PHP-Service -> MariaDB -> GET-API -> Reader/Java-Viewer
+```
+
+Der aktuelle Testbestand umfasst 24 nachvollziehbare Logmeldungen:
+
+```text
+1-10    SQL-Demo-Daten
+11-12   curl-Sender und curl-Roundtrip
+13-16   PHP-Sender und PHP-Roundtrip
+17-20   Java-Sender und Java-Roundtrip
+21-24   C#-Sender und C#-Roundtrip
 ```
 
 ## Wichtige Dokumente
@@ -86,7 +96,9 @@ examples/
 
 ## Nächste sinnvolle Schritte
 
-Nach der Client-Beispielrunde sollte die Dokumentation kurz konsolidiert werden. Danach beginnt die eigentliche Verbesserung des Services:
+Die Client-Beispielrunde und die dazugehörige Dokumentationskonsolidierung sind abgeschlossen.
+
+Als nächstes beginnt die eigentliche Verbesserung des Services:
 
 ```text
 LS-021: Request-ID einführen

@@ -8,7 +8,7 @@ Arbeitsmodus: Lehrprojekt, atomare Schritte, Service/Datenbank/Client gemeinsam 
 
 ## Git-Stand zuletzt bekannt
 
-Aktueller sauberer Stand nach LS-019:
+Aktueller sauberer Stand nach der Client-Beispielrunde und Dokumentationskonsolidierung:
 
 ```text
 main
@@ -19,38 +19,57 @@ working tree clean
 Wichtige letzte Commits:
 
 ```text
-839c477 Merge pull request #2 from Robin-Goerlach/feature/java-viewer-settings
-6c3fb86 Ignore editor swap files
-2687749 Remove editor swap file
-07a9bc8 Add explanatory comments to current V1 code
-dba5742 Update LogSink learning docs for Tuesday planning
+16b0af1 Update TODO after client examples
+d1d7312 Consolidate documentation after client examples
+b539231 Add C# log sender and reader examples
+58295a5 Add Java log sender example
+6946536 Merge PHP sender/reader examples
 ```
 
-## Rückblick Montag/Dienstag
+## Erreichter Stand
 
-Erreicht:
+Der PHP-Service läuft bei IONOS.
 
-- PHP-Service läuft bei IONOS.
-- Java-Viewer kann Remote-Logs anzeigen.
-- IONOS nutzt PHP 8.4.20.
-- PDO MySQL ist verfügbar.
-- Die Testdatenbank enthält 10 Demo-Logmeldungen.
-- `public/index.php` wurde als notwendiger Deployment-Bestandteil erkannt.
-- `.env` wurde aus dem öffentlichen Service-Verzeichnis entfernt.
-- externe `.env-logsink` wurde eingeführt.
-- SQL wurde in lokale Datenbankerzeugung, Schema und Demo-Daten getrennt.
-- Diagnose-Skript wurde in `tools/diagnostics` verschoben.
-- Code von PHP-Service und Java-Viewer wurde ausführlich kommentiert.
-- Java-Viewer-Konfiguration wurde eingeführt.
+Aktueller Remote-Endpunkt:
+
+```text
+http://api.sasd.de/logsink/index.php
+```
+
+Die echte IONOS-Konfiguration wurde aus der Browser-Reichweite verschoben:
+
+```text
+.env-logsink
+```
+
+Die HTTP-API ist weiterhin ungeschützt. Die erste Sicherungsmaßnahme schützt nur die Konfigurationsdatei, nicht den Service-Endpunkt.
+
+## Datenbank/Testbestand
+
+Die Datenbank enthält aktuell 24 nachvollziehbare Testmeldungen:
+
+```text
+1-10    SQL-Demo-Daten
+11-12   curl-Sender und curl-Roundtrip
+13-16   PHP-Sender und PHP-Roundtrip
+17-20   Java-Sender und Java-Roundtrip
+21-24   C#-Sender und C#-Roundtrip
+```
+
+Dieser Testbestand ist im Moment nützlich, weil er die Entwicklungsschritte im Java-Viewer und über die Reader-Beispiele sichtbar macht.
 
 ## Aktuelle technische Basis
 
 ### Service
 
-V1-URL bei IONOS:
-
 ```text
-http://api.sasd.de/logsink/index.php?limit=5
+services/log-sink/
+```
+
+Remote-Test:
+
+```bash
+curl -i "http://api.sasd.de/logsink/index.php?limit=5"
 ```
 
 ### Datenbank
@@ -59,21 +78,8 @@ http://api.sasd.de/logsink/index.php?limit=5
 database/mariadb/
 ├── 000_create_database_local.sql
 ├── 001_schema_existing_database.sql
-└── 010_demo_data.sql
-```
-
-### Konfiguration des PHP-Service
-
-Echte IONOS-Konfiguration:
-
-```text
-.env-logsink
-```
-
-Nicht mehr öffentlich im Service-Verzeichnis:
-
-```text
-logsink/.env
+├── 010_demo_data.sql
+└── README.md
 ```
 
 ### Java-Viewer
@@ -84,7 +90,7 @@ Der Java-Viewer baut mit:
 mvn -f clients/java-log-viewer/pom.xml clean package
 ```
 
-Der Java-Viewer nutzt jetzt Konfigurationsdateien:
+Der Java-Viewer nutzt Konfigurationsdateien:
 
 ```text
 clients/java-log-viewer/client-settings.example.json
@@ -94,25 +100,62 @@ clients/java-log-viewer/client-settings.json
 `client-settings.example.json` wird committed.  
 `client-settings.json` wird lokal verwendet und ignoriert.
 
-Der Client sucht Konfiguration in dieser Reihenfolge:
+## Beispiel-Clients
 
-1. `-Dlogsink.viewer.config=...`
-2. `LOGSINK_VIEWER_CONFIG`
-3. `client-settings.json`
-4. `clients/java-log-viewer/client-settings.json`
-5. `~/.logsink/java-viewer-settings.json`
+Die aktuelle V0/V1-Client-Beispielrunde ist abgeschlossen.
+
+### curl
+
+```text
+examples/log-senders/curl/
+examples/log-readers/curl/
+```
+
+### PHP
+
+```text
+examples/log-senders/php/
+examples/log-readers/php/
+```
+
+### Java
+
+```text
+examples/log-senders/java/
+```
+
+### C#
+
+```text
+examples/csharp/
+```
+
+## Aktueller API-Vertrag
+
+Der reale aktuelle Vertrag ist dokumentiert in:
+
+```text
+contracts/http-api/logs-v1.md
+```
+
+Wichtig: Der Vertrag beschreibt den aktuellen V0/V1-Stand über `index.php`. Die geplante Ziel-API mit Routing, Request-ID, einheitlichem Antwortmodell, Authentifizierung und Scopes kommt später.
 
 ## Nächste Arbeitsschritte
 
-1. `README_LEARNING_DOCS.md` aktualisieren und committen.
-2. TODO/CHANGELOG an LS-019 anpassen.
-3. Schreibende Logging-Clients final platzieren: `examples/` oder `clients/`.
-4. curl-Sender für aktuelle ungeschützte V1 erstellen.
-5. PHP-Logging-Client erstellen.
-6. Java-Logging-Client erstellen.
-7. Tests definieren: Sender -> Service -> DB -> Viewer.
-8. Danach API-Routing und Health-Endpunkt vorbereiten.
+Der nächste sinnvolle technische Schritt ist:
+
+```text
+LS-021: Request-ID einführen
+```
+
+Danach folgen:
+
+```text
+LS-022: Einheitliches JSON-Antwortmodell einführen
+LS-023: Einfaches Routing einführen
+LS-024: Front-Controller-Route-Parameter ergänzen
+```
 
 ## Warnung
 
-Die V1 ist weiterhin ungeschützt. Die erste Sicherungsmaßnahme schützt nur die Konfigurationsdatei, nicht die HTTP-API.
+Die V0/V1 ist weiterhin ungeschützt. Die Beispiel-Clients curl, PHP, Java und C# nutzen bewusst noch den offenen Endpunkt. Vor produktiver Nutzung müssen mindestens Authentifizierung, Autorisierung, Scopes, Audit-Logging und defensive Fehlerbehandlung ergänzt werden.
