@@ -72,4 +72,10 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# Local runtime configuration
 client-settings.json
+client-settings.local.json
+
+# Keep the documented example configuration in Git.
+!client-settings.example.json
