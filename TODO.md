@@ -4,24 +4,14 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 
 ## Sofort / Dienstag
 
-- [X] curl-Logbeispiele einspielen.
-- [X] Remote-Service prüfen: `curl -i "http://api.sasd.de/logsink/index.php?limit=5"`.
-- [X] Roundtrip-Smoke-Test ausführen.
-- [X] Java-Viewer starten und prüfen, ob gesendete Meldungen sichtbar sind.
+- [x] curl-Logbeispiele einspielen.
+- [x] Remote-Service prüfen: `curl -i "http://api.sasd.de/logsink/index.php?limit=5"`.
+- [x] Roundtrip-Smoke-Test ausführen.
+- [x] Java-Viewer starten und prüfen, ob gesendete Meldungen sichtbar sind.
+- [ ] PHP-Logging-Client einspielen.
+- [ ] PHP-Roundtrip-Smoke-Test ausführen.
+- [ ] Java-Viewer prüfen, ob PHP-Meldungen sichtbar sind.
 - [ ] API-Vertrag historisieren: aktueller `index.php`-Betrieb vs. spätere `/api`-/`route`-API.
-
-## Erledigt am 2026-04-28
-
-- [x] Doppelte Sicherheitsdokumentation bereinigt.
-- [x] `10-from-unprotected-to-secure.md` als kanonisches Sicherheitsdokument festgelegt.
-- [x] `11-v1-code-walkthrough-and-first-hardening.md` ergänzt.
-- [x] `12-logging-client-plan.md` ergänzt.
-- [x] Code von PHP-Service und Java-Viewer ausführlich kommentiert.
-- [x] Editor-Swap-Datei entfernt und Swap-/Backup-Dateien ignoriert.
-- [x] Java-Viewer-Konfiguration eingeführt.
-- [x] `client-settings.example.json` eingeführt.
-- [x] lokale `client-settings.json` ignoriert.
-- [x] Hart codierte Service-URL aus `LogViewerFrame` entfernt.
 
 ## Examples
 
@@ -29,7 +19,7 @@ Diese Datei enthält konkrete Arbeitsaufgaben. Die Begründung und der rote Fade
 - [x] EX-002: curl-Sender für JSON/Text/Error erstellen.
 - [x] EX-003: curl-Reader zur Verifikation erstellen.
 - [x] EX-004: Roundtrip-Smoke-Test erstellen.
-- [ ] EX-005: PHP-Logging-Client erstellen.
+- [x] EX-005: PHP-Logging-Client erstellen.
 - [ ] EX-006: Java-Logging-Client erstellen.
 - [ ] EX-007: Sender-Clients später an Authentifizierung anpassen.
 
