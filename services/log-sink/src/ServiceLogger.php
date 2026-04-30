@@ -7,26 +7,16 @@ namespace Sasd\LogSink;
 use Throwable;
 
 /**
- * Einfacher technischer Logger für den Service selbst.
+ * Sehr einfacher Service-Logger für die aktuelle V1.
  *
- * Wichtig:
+ * Aufgabe:
  * --------
- * Dieser Logger ist nicht der LogSink-Fachzweck.
+ * Diese Klasse schreibt technische Service-Meldungen in eine lokale Logdatei.
  *
- * LogSink nimmt Logmeldungen von Clients entgegen und speichert sie in der
- * Datenbank. Das ist die fachliche Logging-Funktion.
- *
- * ServiceLogger dagegen schreibt interne technische Meldungen des PHP-Services,
- * z. B.:
- *
- * - ein Logeintrag wurde gespeichert,
- * - eine Exception ist aufgetreten,
- * - später vielleicht Start-/Diagnoseinformationen.
- *
- * Ziel:
- * -----
- * Wenn der Service selbst Probleme hat, kann man in var/log/service.log
- * nachsehen.
+ * LS-021:
+ * -------
+ * Die Methoden können jetzt eine Request-ID entgegennehmen. Dadurch lassen
+ * sich mehrere technische Logzeilen derselben HTTP-Anfrage zuordnen.
  */
 final class ServiceLogger
 {
@@ -36,18 +26,21 @@ final class ServiceLogger
     ) {
     }
 
-    public function info(string $message): void
+    public function info(string $message, ?string $requestId = null): void
     {
-        $this->write('INFO', $message);
+        $this->write('INFO', $message, $requestId);
     }
 
-    public function error(string $message, ?Throwable $exception = null): void
-    {
+    public function error(
+        string $message,
+        ?Throwable $exception = null,
+        ?string $requestId = null
+    ): void {
         if ($exception !== null) {
             $message .= ' | ' . $exception::class . ': ' . $exception->getMessage();
         }
 
-        $this->write('ERROR', $message);
+        $this->write('ERROR', $message, $requestId);
     }
 
     /**
@@ -62,7 +55,7 @@ final class ServiceLogger
      * Der Pfad ist relativ zum Projektroot. Dadurch funktioniert er lokal und
      * bei IONOS ähnlich.
      */
-    private function write(string $level, string $message): void
+    private function write(string $level, string $message, ?string $requestId = null): void
     {
         if (!$this->config->bool('SERVICE_LOG_ENABLED', true)) {
             return;
@@ -70,17 +63,23 @@ final class ServiceLogger
 
         $relativeFile = $this->config->string('SERVICE_LOG_FILE', 'var/log/service.log');
         $file = $this->projectRoot . '/' . ltrim($relativeFile, '/');
-
         $directory = dirname($file);
 
         if (!is_dir($directory)) {
             mkdir($directory, 0775, true);
         }
 
+        $requestIdPart = '';
+
+        if (is_string($requestId) && $requestId !== '') {
+            $requestIdPart = ' requestId=' . $requestId;
+        }
+
         $line = sprintf(
-            "[%s] %-5s %s\n",
+            "[%s] %-5s%s %s\n",
             date('Y-m-d H:i:s'),
             $level,
+            $requestIdPart,
             $message
         );
 

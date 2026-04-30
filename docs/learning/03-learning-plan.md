@@ -234,6 +234,7 @@ Document target HTTP API v1.1 contract
 ```
 
 ### LS-021: Request-ID einführen
+Alle Meldungen mit derselben Request-ID gehören zur selben Anfrage. => Nachvollziebarkeit von Anfragen
 
 **Ziel:** Jede Antwort erhält eine `requestId`.
 

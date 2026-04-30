@@ -22,7 +22,31 @@ keine Scopes
 kein echtes Routing
 Request-Body wird unverändert gespeichert
 GET liest die letzten gespeicherten Meldungen
+Server erzeugt pro HTTP-Request eine Request-ID
 ```
+
+## Request-ID
+
+Seit LS-021 erzeugt der Server für jeden HTTP-Request eine eigene Request-ID.
+
+Die Request-ID erscheint in jeder Antwort als Header:
+
+```http
+X-Request-ID: req_0f6d4c0f7a7c4980a1c02ef8a0d0c4ff
+```
+
+und zusätzlich im JSON-Body:
+
+```json
+{
+  "status": "ok",
+  "requestId": "req_0f6d4c0f7a7c4980a1c02ef8a0d0c4ff"
+}
+```
+
+Die Request-ID ist keine Authentifizierung. Sie ist ein Aktenzeichen für genau einen HTTP-Request. Sie hilft dabei, Client-Antworten, Service-Logs und spätere Audit-Einträge miteinander zu verbinden.
+
+Für LS-021 erzeugt der Server die Request-ID immer selbst. Eine vom Client gesendete `X-Request-ID` wird noch nicht übernommen.
 
 ## Aktueller IONOS-Endpunkt
 
@@ -84,9 +108,16 @@ curl -i -X POST "http://api.sasd.de/logsink/index.php" \
 
 ### Erfolgsantwort
 
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json; charset=utf-8
+X-Request-ID: req_0f6d4c0f7a7c4980a1c02ef8a0d0c4ff
+```
+
 ```json
 {
   "status": "created",
+  "requestId": "req_0f6d4c0f7a7c4980a1c02ef8a0d0c4ff",
   "id": 123,
   "receivedAt": "2026-04-28 13:52:33.685429",
   "rawMessageSize": 67,
@@ -112,9 +143,16 @@ curl -i "http://api.sasd.de/logsink/index.php?limit=10"
 
 ### Erfolgsantwort
 
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+X-Request-ID: req_0f6d4c0f7a7c4980a1c02ef8a0d0c4ff
+```
+
 ```json
 {
   "status": "ok",
+  "requestId": "req_0f6d4c0f7a7c4980a1c02ef8a0d0c4ff",
   "items": [
     {
       "id": 123,
@@ -138,15 +176,22 @@ curl -i "http://api.sasd.de/logsink/index.php?limit=10"
 
 Aktuell sind Fehlerantworten bewusst einfach gehalten.
 
+```http
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json; charset=utf-8
+X-Request-ID: req_0f6d4c0f7a7c4980a1c02ef8a0d0c4ff
+```
+
 ```json
 {
   "status": "error",
+  "requestId": "req_0f6d4c0f7a7c4980a1c02ef8a0d0c4ff",
   "error": "internal_server_error",
   "message": "Internal server error."
 }
 ```
 
-Im Entwicklungsmodus kann `message` technische Details enthalten. Im produktionsnahen Betrieb darf das später nicht passieren.
+Im Entwicklungsmodus kann `message` technische Details enthalten. Im produktionsnahen Betrieb darf das später nicht passieren. Die Request-ID erlaubt trotzdem eine gezielte Fehlersuche im Service-Log.
 
 ## Aktuelle Beispiel-Clients
 
@@ -161,6 +206,8 @@ examples/log-senders/java
 examples/csharp
 clients/java-log-viewer
 ```
+
+Die vorhandenen Clients müssen für LS-021 nicht zwingend angepasst werden. Zusätzliche JSON-Felder wie `requestId` müssen von Clients toleriert werden.
 
 ## Geplante Ziel-API
 

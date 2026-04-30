@@ -17,32 +17,51 @@ use Throwable;
  * - GET  => letzte Logmeldungen lesen
  * - andere Methoden => 405 Method Not Allowed
  *
- * Wichtig:
- * --------
- * App.php ist noch kein ausgewachsener Router. Es gibt noch keine sauberen
- * Routen wie /api/v1/health oder /api/v1/events. Das kommt später.
+ * LS-021:
+ * -------
+ * Ab diesem Schritt bekommt jeder Request eine serverseitige Request-ID.
+ * Diese ID erscheint in:
+ *
+ * - HTTP-Header `X-Request-ID`
+ * - JSON-Antwortfeld `requestId`
+ * - Service-Logdatei
+ *
+ * Die Request-ID ist keine Authentifizierung. Sie ist ein Aktenzeichen für
+ * genau einen HTTP-Request und hilft beim Debugging, bei Supportfällen und
+ * später beim Audit-Logging.
  */
 final class App
 {
+    private readonly string $requestId;
+
     public function __construct(
         private readonly LogRepository $repository,
         private readonly ServiceLogger $logger,
         private readonly Config $config
     ) {
+        /*
+         * Für LS-021 erzeugt der Server die Request-ID immer selbst.
+         *
+         * Das ist absichtlich einfacher und sicherer als eine vom Client
+         * gelieferte X-Request-ID ungeprüft zu übernehmen.
+         */
+        $this->requestId = self::generateRequestId();
     }
 
     /**
      * Einstiegspunkt für den aktuellen Request.
      *
      * Diese Methode entscheidet anhand der HTTP-Methode, was passieren soll.
-     *
-     * Bei Fehlern wird eine JSON-Fehlerantwort erzeugt. Gleichzeitig schreibt
-     * ServiceLogger den technischen Fehler in var/log/service.log.
      */
     public function handle(): void
     {
         try {
             $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+
+            $this->logger->info(
+                'Request handling started: method=' . $method,
+                $this->requestId
+            );
 
             if ($method === 'POST') {
                 $this->writeLog();
@@ -53,6 +72,11 @@ final class App
                 $this->readLogs();
                 return;
             }
+
+            $this->logger->info(
+                'Request rejected: method not allowed: method=' . $method,
+                $this->requestId
+            );
 
             $this->json([
                 'status' => 'error',
@@ -66,8 +90,14 @@ final class App
              * Im Entwicklungsmodus darf die Fehlermeldung sichtbar sein.
              * Im produktionsnahen Betrieb sollte APP_DEBUG=false sein, damit
              * keine internen Details an Clients ausgeliefert werden.
+             *
+             * Die Request-ID erlaubt trotzdem eine gezielte Suche im Service-Log.
              */
-            $this->logger->error('Unhandled service error', $exception);
+            $this->logger->error(
+                'Unhandled service error',
+                $exception,
+                $this->requestId
+            );
 
             $this->json([
                 'status' => 'error',
@@ -86,9 +116,6 @@ final class App
      * -----------
      * Der Body wird unverändert gespeichert. Der Service interessiert sich noch
      * nicht dafür, ob der Body JSON, Text oder etwas anderes ist.
-     *
-     * Das macht den ersten Prototyp sehr einfach, ist aber noch nicht das
-     * spätere Ziel. Später wird ein strukturierter Ingest-Endpunkt eingeführt.
      */
     private function writeLog(): void
     {
@@ -114,7 +141,10 @@ final class App
             headers: $this->headers()
         );
 
-        $this->logger->info('Log entry written with id ' . ($result['id'] ?? 'unknown'));
+        $this->logger->info(
+            'Log entry written with id ' . ($result['id'] ?? 'unknown'),
+            $this->requestId
+        );
 
         $this->json([
             'status' => 'created',
@@ -135,6 +165,11 @@ final class App
     {
         $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 100;
 
+        $this->logger->info(
+            'Latest log entries requested: limit=' . $limit,
+            $this->requestId
+        );
+
         $this->json([
             'status' => 'ok',
             'items' => $this->repository->findLatest($limit),
@@ -144,7 +179,7 @@ final class App
     /**
      * Sammelt die HTTP-Header des aktuellen Requests.
      *
-     * @return array<string, string>
+     * @return array<string,string>
      */
     private function headers(): array
     {
@@ -184,16 +219,84 @@ final class App
     /**
      * Sendet eine JSON-Antwort.
      *
-     * @param array<string, mixed> $data
+     * LS-021 ergänzt automatisch:
+     *
+     * - Header `X-Request-ID`
+     * - JSON-Feld `requestId`
+     *
+     * @param array<string,mixed> $data
      */
     private function json(array $data, int $statusCode = 200): void
     {
         http_response_code($statusCode);
+
         header('Content-Type: application/json; charset=utf-8');
+        header('X-Request-ID: ' . $this->requestId);
+
+        $data = $this->addRequestIdToResponse($data);
 
         echo json_encode(
             $data,
             JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
         );
+    }
+
+    /**
+     * Fügt die Request-ID in die JSON-Antwort ein.
+     *
+     * Wenn `status` vorhanden ist, bleibt `status` absichtlich das erste Feld.
+     * Dadurch bleiben die Antworten für Menschen gut lesbar:
+     *
+     * {
+     *   "status": "ok",
+     *   "requestId": "req_..."
+     * }
+     *
+     * @param array<string,mixed> $data
+     * @return array<string,mixed>
+     */
+    private function addRequestIdToResponse(array $data): array
+    {
+        if (array_key_exists('requestId', $data)) {
+            return $data;
+        }
+
+        if (array_key_exists('status', $data)) {
+            $result = [
+                'status' => $data['status'],
+                'requestId' => $this->requestId,
+            ];
+
+            unset($data['status']);
+
+            return $result + $data;
+        }
+
+        return ['requestId' => $this->requestId] + $data;
+    }
+
+    /**
+     * Erzeugt eine serverseitige Request-ID.
+     *
+     * Format:
+     *
+     *   req_ + 32 hexadezimale Zufallszeichen
+     *
+     * Beispiel:
+     *
+     *   req_0f6d4c0f7a7c4980a1c02ef8a0d0c4ff
+     */
+    private static function generateRequestId(): string
+    {
+        try {
+            return 'req_' . bin2hex(random_bytes(16));
+        } catch (Throwable) {
+            /*
+             * random_bytes() sollte normalerweise verfügbar sein.
+             * Der Fallback ist nur eine Notbremse, damit der Service im
+             * Ausnahmefall trotzdem eine nachvollziehbare ID erzeugt.
+             */
+            return 'req_' . str_replace('.', '', uniqid('', true));
+        }
     }
 }
